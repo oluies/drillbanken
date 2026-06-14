@@ -8,6 +8,16 @@
 
 **Input**: User description: "Gamified, console-based SQL tutor (DuckDB-WASM in the browser) built on the Försvarsmakten instruction loop VISA→INSTRUERA→ÖVA(parts)→ÖVA(whole)→PRÖVA mapped onto Kolb; v1 subject domain is SQL."
 
+## Clarifications
+
+### Session 2026-06-14
+
+- Q: What grading scale should PRÖVA use? → A: Points only — a numeric score; no IG/G/VG letter grades in v1.
+- Q: What language for the UI chrome and lesson content in v1? → A: Both Swedish and English from the start, learner-selectable (bilingual, i18n-ready).
+- Q: How should the VISA/INSTRUERA demonstration be realized? → A: A declarative, timed transcript authored as lesson data and replayed by the console (not captured live); the lesson's reference solution is still executed live for checking.
+- Q: What format should lesson content take? → A: In-bundle typed Scala lesson-definition objects (a Scala content DSL) compiled into the bundle.
+- Q: How should Scala.js interop with xterm.js and DuckDB-WASM be structured? → A: ScalablyTyped-generated facades for both libraries.
+
 ## User Scenarios & Testing *(mandatory)*
 
 The product teaches a skill (SQL in v1) through the Swedish Armed Forces instruction
@@ -116,27 +126,30 @@ replay, and confirm the learner returns to the same drill with progress intact.
 3. **Given** the learner is in PRÖVA, **When** they attempt repeat-demo, **Then** it is
    refused because PRÖVA permits no assistance.
 
-### User Story 5 - Author adds a new lesson as a data file (Priority: P3)
+### User Story 5 - Author adds a new lesson as a typed lesson definition (Priority: P3)
 
-An author adds a complete lesson — demonstration script, keyword instructions,
-part-drills with checkers, whole-task, and exam rubric — as a single declarative data
-artifact, and it appears in the curriculum without any change to the engine.
+An author adds a complete lesson — timed demonstration transcript, bilingual keyword
+instructions, part-drills with checkers, whole-task, and exam rubric — as a single
+declarative typed lesson-definition object (a Scala content DSL), and after a rebuild it
+appears in the curriculum without any change to the instruction-loop engine.
 
 **Why this priority**: Content-as-data is what lets the curriculum grow; valuable but not
 required to validate the loop on the seeded lessons that ship.
 
-**Independent Test**: Add one new lesson artifact following the documented shape, reload,
-and confirm it appears in sequence and is fully playable through all five phases without
-code changes.
+**Independent Test**: Add one new lesson definition following the documented shape,
+rebuild, and confirm it appears in sequence and is fully playable through all five phases
+without any change to the engine.
 
 **Acceptance Scenarios**:
 
-1. **Given** a new lesson artifact in the documented format, **When** the application
-   loads, **Then** the lesson appears in the curriculum in its defined sequence position.
+1. **Given** a new lesson definition in the documented format, **When** the application
+   is rebuilt and loaded, **Then** the lesson appears in the curriculum in its defined
+   sequence position.
 2. **Given** the new lesson, **When** a learner plays it, **Then** all five phases,
-   checkers, hints and the exam rubric behave as defined by the artifact.
-3. **Given** a malformed lesson artifact, **When** the application loads, **Then** the
-   problem is surfaced clearly rather than corrupting the curriculum or other lessons.
+   checkers, hints and the exam rubric behave as defined by the lesson definition.
+3. **Given** a malformed lesson definition, **When** the project is compiled, **Then** the
+   problem is surfaced as a compile-time error rather than corrupting the curriculum or
+   other lessons at runtime.
 
 ### User Story 6 - Export and import progress (Priority: P3)
 
@@ -187,7 +200,10 @@ file, and confirm progress is restored.
   ÖVA(parts) → ÖVA(whole) → PRÖVA in that fixed order.
 - **FR-002**: VISA MUST present the target performance at full speed with no commentary;
   INSTRUERA MUST replay the same performance slowly, stepwise, with short imperative
-  keyword-level annotations.
+  keyword-level annotations. The demonstration MUST be a declarative, timed transcript
+  authored as lesson data and replayed by the console (not captured live); the lesson's
+  reference solution MUST still be executed live for checking, so the demonstrated target
+  cannot silently diverge from real engine behavior.
 - **FR-003**: ÖVA(parts) MUST present each sub-step as an isolated drill with immediate
   pass/retry feedback and MUST allow unlimited repetition.
 - **FR-004**: ÖVA(whole) MUST let the learner perform the whole task self-paced with
@@ -216,8 +232,10 @@ file, and confirm progress is restored.
   requirement, in which case order MUST be enforced.
 - **FR-012**: Where a task defines a required SQL shape, the checker MUST also validate
   that shape; otherwise any formulation producing the correct result MUST pass.
-- **FR-013**: PRÖVA MUST produce a grade from a per-lesson rubric that may weigh
-  correctness, number of attempts, hint usage, and a per-lesson time-box where defined.
+- **FR-013**: PRÖVA MUST produce a numeric points score from a per-lesson rubric that may
+  weigh correctness, number of attempts, hint usage, and a per-lesson time-box where
+  defined. v1 uses points only — no IG/G/VG letter grades. The rubric MUST define the
+  points threshold that constitutes a passing PRÖVA against the end requirement.
 - **FR-014**: Repetition in any ÖVA phase MUST NOT reduce any score; only hint usage and
   PRÖVA performance affect the grade.
 
@@ -231,11 +249,14 @@ file, and confirm progress is restored.
 
 **Content as data**
 
-- **FR-018**: Each lesson MUST be a single declarative artifact containing its
-  demonstration script, keyword instructions, part-drills with checkers, whole-task, and
-  exam rubric.
-- **FR-019**: Adding or editing a lesson MUST require no change to the engine, and a
-  malformed lesson MUST be surfaced without corrupting other lessons.
+- **FR-018**: Each lesson MUST be a single declarative, typed lesson-definition object (a
+  Scala content DSL) compiled into the application bundle, containing its timed
+  demonstration transcript, bilingual keyword instructions, part-drills with checkers,
+  whole-task, and exam rubric.
+- **FR-019**: Adding or editing a lesson MUST require no change to the instruction-loop,
+  checking, grading, or progression engine — only the addition or editing of a
+  lesson-definition object plus a rebuild. A malformed lesson definition MUST be caught at
+  compile time (type errors) rather than corrupting other lessons at runtime.
 - **FR-020**: The seeded dataset MUST be a small trading book (traders, instruments,
   trades) containing deliberate NULLs and orphan rows (a trader with no trades, an
   instrument never traded, trades with NULL price) so that join/NULL/anti-join lessons
@@ -262,11 +283,20 @@ file, and confirm progress is restored.
   loop, checking, grading and progression independent of the subject so other practice
   engines can be added later without re-architecting.
 
+**Localization**
+
+- **FR-027**: The system MUST offer all learner-facing UI text and lesson prose in both
+  Swedish and English, with a learner-selectable language that can be changed without
+  losing progress. SQL keywords and the Försvarsmakten phase names (VISA, INSTRUERA, ÖVA,
+  PRÖVA) remain untranslated as domain terms. Each lesson definition MUST supply its
+  instruction and feedback prose in both languages.
+
 ### Key Entities *(include if feature involves data)*
 
-- **Lesson**: A single declarative unit of curriculum; holds its demonstration script,
-  keyword instructions, ordered part-drills, whole-task, exam rubric, sequence position,
-  and any time-box. The unit of content authoring.
+- **Lesson**: A single declarative unit of curriculum, authored as a typed in-bundle
+  lesson-definition object (Scala content DSL); holds its timed demonstration transcript,
+  bilingual keyword instructions, ordered part-drills, whole-task, exam rubric, sequence
+  position, and any time-box.
 - **Phase**: One of VISA, INSTRUERA, ÖVA(parts), ÖVA(whole), PRÖVA, with fixed order and
   entry gates.
 - **Part-Drill**: An isolated sub-step practice item with its own checker and reference
@@ -309,6 +339,8 @@ file, and confirm progress is restored.
   emitted and no learner SQL is ever transmitted.
 - **SC-010**: The entire experience runs client-side with no backend and no runtime
   dependency on an external content server.
+- **SC-011**: All learner-facing UI and lesson prose are available in both Swedish and
+  English, and the learner can switch language at any time without losing progress.
 
 ## Assumptions
 
@@ -328,19 +360,21 @@ file, and confirm progress is restored.
   Scala.js + Laminar implementation is the chosen approach; earlier Vue bindings and a
   hybrid split were considered and rejected. This is an implementation decision recorded
   here for traceability and does not affect the user-facing requirements above.
+- **Interop & content realization (clarified 2026-06-14, recorded for downstream phases)**:
+  JS interop with xterm.js and DuckDB-WASM uses ScalablyTyped-generated facades; lesson
+  content is compiled into the bundle as typed Scala lesson-definition objects rather than
+  loaded from external data files. These are implementation decisions; the user-facing
+  requirements remain implementation-agnostic.
 
-## Open Decisions (deferred to `/speckit-clarify`)
+## Open Decisions
 
-These do not block the spec but are flagged for explicit resolution in the clarify step
-per the project brief; reasonable defaults are noted but NOT yet committed:
+The five product/technical decisions flagged for the clarify step were resolved on
+2026-06-14 (see the Clarifications section): grading scale (points only), UI/content
+language (both sv/en), VISA realization (recorded timed transcript), lesson content
+format (in-bundle typed Scala objects), and JS interop (ScalablyTyped facades).
 
-- **Grading scale**: Swedish IG/G/VG vs numeric points vs both. (Affects the rubric and
-  reflection presentation.)
-- **UI & content language**: Swedish, English, or both from the start. (Affects all
-  learner-facing text and lesson content.)
-- **VISA realization**: pre-recorded timed transcript vs scripted live execution against
-  the real engine. (Affects determinism of the demonstration.)
-- **Lesson content format**: data file (YAML/JSON) vs in-bundle typed objects vs
-  markdown-with-frontmatter. (Affects author ergonomics for non-Scala authors.)
+One low-impact decision remains open and is deferred to planning / content authoring:
+
 - **Time-box scope**: whether any v1 lesson actually defines a time-box, or whether it
-  remains a rubric capability unused in v1.
+  remains a rubric capability left unused in v1. (Low impact — the rubric already supports
+  an optional time-box per FR-013; this only affects whether seeded lessons use it.)
