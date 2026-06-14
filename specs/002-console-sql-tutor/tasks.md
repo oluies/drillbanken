@@ -53,9 +53,9 @@ project brief and plan.
 
 **Shared base types (pure domain — no DOM/Laminar):**
 
-- [ ] T007 [P] Define boundary value types `QueryResult`, `EngineStatus` (Loading/Ready/Failed), `EngineError` in `modules/domain/src/main/scala/drillbanken/domain/Engine.scala`
-- [ ] T008 [P] Define `LocalizedText` and `Language` (Sv/En) in `modules/domain/src/main/scala/drillbanken/domain/I18n.scala`
-- [ ] T009 [P] Define core loop/grading model types (`Phase`, `LessonId`, `PartId`, `Checker`, `Rubric`, `Grade`, `ReflectionReport`, `CheckOutcome`) in `modules/domain/src/main/scala/drillbanken/domain/Model.scala` (no logic yet — types only)
+- [X] T007 [P] Define boundary value types `QueryResult`, `EngineStatus` (Loading/Ready/Failed), `EngineError` in `modules/domain/src/main/scala/drillbanken/domain/Engine.scala`
+- [X] T008 [P] Define `LocalizedText` and `Language` (Sv/En) in `modules/domain/src/main/scala/drillbanken/domain/I18n.scala`
+- [X] T009 [P] Define core loop/grading model types (`Phase`, `LessonId`, `PartId`, `Checker`, `Rubric`, `Grade`, `ReflectionReport`, `CheckOutcome`) in `modules/domain/src/main/scala/drillbanken/domain/Model.scala` (no logic yet — types only)
 
 **Interop spike (Milestone 0 — GATING):**
 
@@ -86,15 +86,15 @@ project brief and plan.
 
 ### Tests for User Story 1 (write first; must fail before implementation)
 
-- [ ] T021 [P] [US1] ScalaCheck properties for the loop state machine (phase order fixed; PRÖVA gate blocks until ÖVA gates met; abort never grades) in `modules/domain/src/test/scala/drillbanken/domain/LoopSpec.scala`
-- [ ] T022 [P] [US1] ScalaCheck properties for the checker (order-insensitive passes reordered rows; order-sensitive fails; no shapeRule ⇒ any correct SQL passes) in `modules/domain/src/test/scala/drillbanken/domain/CheckSpec.scala`
-- [ ] T023 [P] [US1] ScalaCheck properties for grading (numeric points only; ÖVA repetition not an input; `passed = points ≥ threshold`) and reflection (`drillAgain ⊆ parts`) in `modules/domain/src/test/scala/drillbanken/domain/GradingSpec.scala`
+- [X] T021 [P] [US1] ScalaCheck properties for the loop state machine (phase order fixed; PRÖVA gate blocks until ÖVA gates met; abort never grades) in `modules/domain/src/test/scala/drillbanken/domain/LoopSpec.scala`
+- [X] T022 [P] [US1] ScalaCheck properties for the checker (order-insensitive passes reordered rows; order-sensitive fails; no shapeRule ⇒ any correct SQL passes) in `modules/domain/src/test/scala/drillbanken/domain/CheckSpec.scala`
+- [X] T023 [P] [US1] ScalaCheck properties for grading (numeric points only; ÖVA repetition not an input; `passed = points ≥ threshold`) and reflection (`drillAgain ⊆ parts`) in `modules/domain/src/test/scala/drillbanken/domain/GradingSpec.scala`
 
 ### Implementation for User Story 1
 
-- [ ] T024 [US1] Implement the loop state machine `Loop.start/advance` with typed transitions + gates in `modules/domain/src/main/scala/drillbanken/domain/loop/Loop.scala` (data-model.md, contracts/domain-api.md)
-- [ ] T025 [P] [US1] Implement `Check.canonicalize/check` (lowercase cols, stringify rows, sort unless order-sensitive; optional shapeRule) in `modules/domain/src/main/scala/drillbanken/domain/check/Check.scala`
-- [ ] T026 [P] [US1] Implement `Grading.grade` (points from correctness/attempts/hints/time) + `Grading.reflect` (drillAgain) in `modules/domain/src/main/scala/drillbanken/domain/grade/Grading.scala`
+- [X] T024 [US1] Implement the loop state machine `Loop.start/advance` with typed transitions + gates in `modules/domain/src/main/scala/drillbanken/domain/loop/Loop.scala` (data-model.md, contracts/domain-api.md)
+- [X] T025 [P] [US1] Implement `Check.canonicalize/check` (lowercase cols, stringify rows, sort unless order-sensitive; optional shapeRule) in `modules/domain/src/main/scala/drillbanken/domain/check/Check.scala`
+- [X] T026 [P] [US1] Implement `Grading.grade` (points from correctness/attempts/hints/time) + `Grading.reflect` (drillAgain) in `modules/domain/src/main/scala/drillbanken/domain/grade/Grading.scala`
 - [ ] T027 [US1] Author the first seeded lesson (`LessonDef` with transcript, parts+checkers, whole, exam rubric, bilingual prose) in `modules/content/src/main/scala/drillbanken/content/lessons/Lesson01.scala` and register it in `Curriculum`
 - [ ] T028 [P] [US1] Implement i18n string lookup driven by a reactive `Signal[Language]` (so all views re-render on language change) in `modules/app/src/main/scala/drillbanken/app/I18n.scala` (FR-027)
 - [ ] T029 [US1] Implement VISA phase view: replay the transcript at full speed via the console (FR-002) wired through `Loop`
@@ -118,11 +118,11 @@ project brief and plan.
 
 ### Tests for User Story 2 (write first)
 
-- [ ] T037 [P] [US2] ScalaCheck properties: failing PRÖVA does not advance; `drillAgain` maps only to missed-requirement parts; best-grade is monotonic in points (FR-007, FR-017) in `modules/domain/src/test/scala/drillbanken/domain/RerouteSpec.scala`
+- [X] T037 [P] [US2] ScalaCheck properties: failing PRÖVA does not advance; `drillAgain` maps only to missed-requirement parts; best-grade is monotonic in points (FR-007, FR-017) in `modules/domain/src/test/scala/drillbanken/domain/RerouteSpec.scala`
 
 ### Implementation for User Story 2
 
-- [ ] T038 [US2] Implement the re-entry transition `Loop.advance` for accepted "drill again" → re-enter named `OvaParts` drills (without resetting passed drills' best state) in `modules/domain/src/main/scala/drillbanken/domain/loop/Loop.scala`
+- [X] T038 [US2] Implement the re-entry transition `Loop.advance` for accepted "drill again" → re-enter named `OvaParts` drills (without resetting passed drills' best state) in `modules/domain/src/main/scala/drillbanken/domain/loop/Loop.scala`
 - [ ] T039 [US2] Wire the reflection screen's "drill again" acceptance to the re-entry transition in `LessonController.scala` (FR-007)
 - [ ] T040 [US2] Validate US2 end-to-end via quickstart recipe step 4
 
@@ -138,11 +138,11 @@ project brief and plan.
 
 ### Tests for User Story 3 (write first)
 
-- [ ] T041 [P] [US3] munit round-trip tests for `ProgressState`/`LessonState` (serialize → deserialize is identity; first-run state has only lowest-sequence lesson unlocked) in `modules/domain/src/test/scala/drillbanken/domain/ProgressSpec.scala`
+- [X] T041 [P] [US3] munit round-trip tests for `ProgressState`/`LessonState` (serialize → deserialize is identity; first-run state has only lowest-sequence lesson unlocked) in `modules/domain/src/test/scala/drillbanken/domain/ProgressSpec.scala`
 
 ### Implementation for User Story 3
 
-- [ ] T042 [P] [US3] Implement `ProgressState`, `LessonProgress`, and progression rules (`Progression.applyGrade/isUnlocked`, unlock-on-pass, streak/insignia) in `modules/domain/src/main/scala/drillbanken/domain/progress/Progression.scala` (FR-015, FR-016, FR-017)
+- [X] T042 [P] [US3] Implement `ProgressState`, `LessonProgress`, and progression rules (`Progression.applyGrade/isUnlocked`, unlock-on-pass, streak/insignia) in `modules/domain/src/main/scala/drillbanken/domain/progress/Progression.scala` (FR-015, FR-016, FR-017)
 - [ ] T043 [US3] Implement `PersistenceService.load/save` over `localStorage` with JSON (de)serialization of `ProgressState` (incl. `LessonState` resume snapshot) in `modules/app/src/main/scala/drillbanken/app/PersistenceService.scala` (FR-021, FR-022)
 - [ ] T044 [US3] Wire load-on-start + save-on-transition into `Main`/`LessonController`; resume to saved phase/sub-step (FR-022)
 - [ ] T045 [US3] Validate US3 end-to-end via quickstart recipe step 6
@@ -159,7 +159,7 @@ project brief and plan.
 
 ### Tests for User Story 4 (write first)
 
-- [ ] T046 [P] [US4] ScalaCheck properties: `RepeatDemoRequested` legal in any ÖVA phase, returns `DemoNotAllowedInProva` in PRÖVA, never mutates score (FR-010, US4) in `modules/domain/src/test/scala/drillbanken/domain/RepeatDemoSpec.scala`
+- [X] T046 [P] [US4] ScalaCheck properties: `RepeatDemoRequested` legal in any ÖVA phase, returns `DemoNotAllowedInProva` in PRÖVA, never mutates score (FR-010, US4) in `modules/domain/src/test/scala/drillbanken/domain/RepeatDemoSpec.scala`
 
 ### Implementation for User Story 4
 
