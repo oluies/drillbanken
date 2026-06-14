@@ -17,6 +17,24 @@ system runs it against a real in-browser database and judges results against ref
 solutions. Lessons unlock in sequence, progress is saved locally, and the whole product
 is a static site with no backend.
 
+## Clarifications
+
+### Session 2026-06-14
+
+- Q: JS interop approach for the terminal and the SQL engine? → A: **Thin TypeScript shim**
+  exposing a narrow typed API (`exec(sql): Promise<Result>`, terminal `open/write/onData`);
+  Apache Arrow result-materialization stays on the JS side so Scala.js consumes flat
+  `{cols, rows}`.
+- Q: Lesson content format? → A: **Structured data files (JSON/YAML)** loaded at runtime,
+  validated against a schema, so non-Scala authors can add lessons without a rebuild.
+- Q: Grading scale? → A: **Points internally, displayed as IG/G/VG** via per-lesson
+  thresholds.
+- Q: VISA implementation? → A: **Pre-recorded timed transcript** (asciinema-style data in
+  the lesson artifact); live engine execution is reserved for the ÖVA/PRÖVA phases.
+- Q: Language of UI and content? → A: **Both Swedish and English from the start**, Swedish
+  as default, built on a real internationalization mechanism from day one (not hardcoded
+  strings retrofitted later).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Complete a lesson end to end through the full loop (Priority: P1)
@@ -266,6 +284,21 @@ Useful but the lowest priority of the set for a first release.
 - **FR-028**: The system MUST report a malformed or incomplete lesson artifact clearly,
   without breaking other lessons.
 
+**Internationalization**
+
+- **FR-030**: The system MUST support both Swedish and English for all UI chrome and
+  lesson content from v1, with Swedish as the default locale.
+- **FR-031**: All user-facing strings MUST be routed through a translation mechanism (a
+  message catalog keyed by stable identifiers); the UI MUST contain no hardcoded
+  user-facing literals.
+- **FR-032**: Lesson content artifacts MUST carry localized variants for each user-facing
+  field; the content loader MUST select strings for the active locale and MUST fall back
+  to the default locale when a translation is missing, rather than showing a raw key.
+- **FR-033**: The learner MUST be able to switch locale; the UI MUST update reactively,
+  and the chosen locale MUST be persisted as part of progress/preferences.
+- **FR-034**: Locale-sensitive formatting (numbers, dates) MUST use a standards-based
+  mechanism that respects the active locale.
+
 **Architecture (forward-looking, constitutional)**
 
 - **FR-029**: The architecture MUST allow additional subject engines (e.g. a shell or
@@ -292,6 +325,9 @@ Useful but the lowest priority of the set for a first release.
 - **Dataset**: the sample data a lesson's queries run against (seed tables with deliberate
   gaps/NULLs that make join/NULL/anti-join skills meaningful).
 - **Reflection**: the post-PRÖVA summary of what was graded, why, and what to drill again.
+- **Locale / message catalog**: the set of supported locales (Swedish default, English)
+  and the keyed translations for UI chrome; lesson artifacts carry their own per-locale
+  field variants. Drives reactive locale switching and is part of persisted preferences.
 
 ## Success Criteria *(mandatory)*
 
@@ -315,6 +351,9 @@ Useful but the lowest priority of the set for a first release.
 - **SC-008**: ÖVA repetition never changes a subsequently computed grade for the same
   performance (repetition is provably cost-free).
 - **SC-009**: A learner is never able to reach PRÖVA before the lesson's ÖVA gates are met.
+- **SC-010**: Switching locale updates all visible UI strings (and presents the active
+  locale's lesson content) with no raw message keys shown for supported locales; missing
+  translations fall back to the default locale.
 
 ## Resolved Decisions (recorded per constitution)
 
@@ -323,18 +362,13 @@ Useful but the lowest priority of the set for a first release.
   favor of a single typed stack with a thin Laminar UI over a framework-free domain core.
   This is settled and not reopened by clarification.
 
-## Open Decisions (to resolve in /speckit-clarify before planning)
+## Decisions Resolved via Clarification (2026-06-14)
 
-These are surfaced for explicit decision rather than assumed silently. They are listed
-here and asked in the clarify step:
-
-1. JS interop approach for the terminal and the SQL engine (hand-written facades vs
-   generated facades vs a thin TypeScript shim exposing a narrow typed API).
-2. Lesson content format (structured data file vs in-bundle Scala DSL vs
-   markdown-with-frontmatter).
-3. Grading scale (Swedish IG/G/VG vs points vs both).
-4. VISA implementation (pre-recorded timed transcript vs scripted live execution).
-5. Language of UI and content (Swedish, English, or both).
+All five previously-deferred decisions are now resolved (see **Clarifications**): TS-shim
+interop, structured-data lesson format, points→IG/G/VG grading, pre-recorded VISA
+transcript, and bilingual SV/EN with a first-class i18n mechanism. The frontend strategy
+remains pure Scala.js + Laminar (recorded above). The concrete i18n library/approach is
+selected in the implementation plan.
 
 ## Assumptions
 
