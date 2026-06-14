@@ -96,7 +96,7 @@ project brief and plan.
 - [ ] T025 [P] [US1] Implement `Check.canonicalize/check` (lowercase cols, stringify rows, sort unless order-sensitive; optional shapeRule) in `modules/domain/src/main/scala/drillbanken/domain/check/Check.scala`
 - [ ] T026 [P] [US1] Implement `Grading.grade` (points from correctness/attempts/hints/time) + `Grading.reflect` (drillAgain) in `modules/domain/src/main/scala/drillbanken/domain/grade/Grading.scala`
 - [ ] T027 [US1] Author the first seeded lesson (`LessonDef` with transcript, parts+checkers, whole, exam rubric, bilingual prose) in `modules/content/src/main/scala/drillbanken/content/lessons/Lesson01.scala` and register it in `Curriculum`
-- [ ] T028 [P] [US1] Implement i18n string lookup (`I18n` keyed by `Language`) for US1 UI chrome in `modules/app/src/main/scala/drillbanken/app/I18n.scala` (FR-027)
+- [ ] T028 [P] [US1] Implement i18n string lookup driven by a reactive `Signal[Language]` (so all views re-render on language change) in `modules/app/src/main/scala/drillbanken/app/I18n.scala` (FR-027)
 - [ ] T029 [US1] Implement VISA phase view: replay the transcript at full speed via the console (FR-002) wired through `Loop`
 - [ ] T030 [US1] Implement INSTRUERA phase view: stepwise transcript replay with annotations (FR-002)
 - [ ] T031 [US1] Implement ÖVA(parts) phase view: per-drill prompt, SQL exec, live-checked pass/retry with immediate feedback (FR-003), unlimited repetition with no score change (FR-014)
@@ -218,6 +218,8 @@ project brief and plan.
 - [ ] T061 [P] Update `README.md` (status → in development; build/run/deploy) and add `docs/ARCHITECTURE.md` with any Mermaid diagrams validated locally via `mmdc` (research.md D15)
 - [ ] T062 [P] Decide optional GoatCounter analytics: implement only if cookieless + DNT/GPC no-op + never transmits SQL (FR-025), else document as deferred in README (research.md D14)
 - [ ] T063 Run the full quickstart e2e recipe (steps 1–9) against a production `npm run build`; confirm no runtime CDN fetch for the engine (SC-010)
+- [ ] T064 Implement the language toggle (a control + a `lang` meta-command) that updates the reactive `Signal[Language]` and persists `language` to `ProgressState` via `PersistenceService`, re-rendering all active views with no progress loss in `modules/app/src/main/scala/drillbanken/app/Main.scala` (FR-027, SC-011) — depends on T028, T042, T043
+- [ ] T065 Validate language switching mid-lesson via quickstart: toggle sv↔en during a drill, confirm all chrome + lesson prose switch and phase/sub-step/score are preserved (SC-011)
 
 ---
 
