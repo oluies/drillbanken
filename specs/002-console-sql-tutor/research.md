@@ -17,19 +17,25 @@ not re-derived. No `NEEDS CLARIFICATION` markers remain.
 
 ## D2 — JS interop strategy
 
-- **Decision**: **ScalablyTyped-generated facades** for `@duckdb/duckdb-wasm` and
-  `@xterm/xterm`, wrapped behind narrow hand-authored services (`EngineService`,
-  `ConsoleService`). Arrow→`{cols, rows}` materialization happens inside `EngineService`.
-- **Rationale**: Clarified choice. Avoids hand-maintaining facades for two evolving
-  libraries; the narrow service wrapper preserves the constitution's narrow-boundary
-  intent so the rest of the app never touches generated types.
-- **Alternatives considered**:
-  - Hand-written minimal `js.native` facades — minimal surface, but the Arrow
-    materialization (below) is awkward to express in Scala.js.
-  - A thin hand-written TypeScript shim returning flattened rows — viable, but the team
-    chose generated facades to keep all logic in Scala behind the service.
-- **Risk to validate in Milestone 0**: ScalablyTyped conversion of the DuckDB-WASM and
-  xterm type definitions must succeed and compile; the spike is the proof.
+- **Original decision (clarify, 2026-06-14)**: ScalablyTyped-generated facades for
+  `@duckdb/duckdb-wasm` and `@xterm/xterm`, behind narrow services.
+- **REVISED decision (Milestone 0 spike, 2026-06-15)**: **Minimal hand-written
+  `js.native` facades** for only the surface we use, behind the narrow `EngineService`
+  and `ConsoleService`. Arrow→`{cols, rows}` materialization happens inside
+  `EngineService` (research.md D4).
+- **Why revised** (this is exactly what the spike is for — see quickstart Milestone 0):
+  ScalablyTyped successfully *generated* the duckdb-wasm + Apache Arrow facades, but the
+  Scala 3 compiler **OOM'd** compiling that surface (`java.lang.OutOfMemoryError: Java
+  heap space`) — a known failure mode for ScalablyTyped on large libraries. The
+  hand-written facades are tiny (`DuckDbFacade.scala`, `XtermFacade.scala`), compile
+  fast, and still keep all generated/JS detail confined to the `engine`/`console`
+  modules — honoring the constitution's narrow-boundary intent (Principle III).
+- **Verified**: `npm run build` bundles the facades + `?url` DuckDB assets + xterm; the
+  headless spike (`npm run e2e`) boots DuckDB **v1.5.1**, renders a query, and surfaces a
+  typed error. ⚠️ This supersedes the clarify decision and should be ratified.
+- **Alternatives considered**: ScalablyTyped (generated, but compiler OOM — rejected); a
+  thin TypeScript shim returning flattened rows (viable fallback if the js.native Arrow
+  surface grows awkward).
 
 ## D3 — DuckDB-WASM bootstrap (settled)
 
