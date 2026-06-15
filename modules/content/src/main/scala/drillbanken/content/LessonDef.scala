@@ -14,20 +14,8 @@ final case class ReferenceSolution(sql: String)
 /** A hint with its PRÖVA-irrelevant ÖVA cost / PRÖVA cost (FR-004, FR-014). */
 final case class Hint(text: LocalizedText, cost: Int)
 
-/** Expected rendered output for a demo step (authored, not executed). */
-final case class QueryResultView(cols: List[String], rows: List[List[Option[String]]])
-
-/** One step of a VISA/INSTRUERA transcript (FR-002, D9). `annotation` shows only in
-  * INSTRUERA (stepwise); `delayMs` drives VISA timing.
-  */
-final case class TranscriptStep(
-    input: String,
-    output: QueryResultView,
-    delayMs: Int,
-    annotation: Option[LocalizedText] = None
-)
-
-final case class Transcript(steps: List[TranscriptStep])
+// QueryResultView / TranscriptStep / Transcript now live in `drillbanken.domain`
+// (imported via `drillbanken.domain.*`) so the console module can replay them too.
 
 final case class PartDrill(
     id: PartId,

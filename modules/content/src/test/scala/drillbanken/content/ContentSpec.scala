@@ -31,6 +31,12 @@ class ContentSpec extends munit.FunSuite:
     assertEquals(Curriculum.validate(List(lesson("a", 1), lesson("b", 2))), Right(()))
     assertEquals(Curriculum.validate(List(lesson("a", 1), lesson("b", 1))), Left("duplicate lesson sequence"))
 
+  test("curriculum has both lessons in sequence and validates (US5)"):
+    assertEquals(Curriculum.all.map(_.sequence), List(1, 2))
+    assertEquals(Curriculum.all.map(_.id.value), List("joins-and-nulls", "nulls-and-aggregates"))
+    assertEquals(Curriculum.validate(), Right(()))
+    assertEquals(Curriculum.first.map(_.sequence), Some(1))
+
   test("a lesson with no parts is rejected"):
     val rubric = Rubric(100, 70, 5, 5, 0, None, 60)
     val checker = Checker(orderSensitive = false)

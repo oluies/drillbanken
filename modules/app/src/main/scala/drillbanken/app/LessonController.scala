@@ -5,7 +5,7 @@ import drillbanken.domain.loop.*
 import drillbanken.domain.check.Check
 import drillbanken.domain.grade.Grading
 import drillbanken.engine.EngineService
-import drillbanken.console.ConsoleService
+import drillbanken.console.{ConsoleService, Speed}
 import drillbanken.content.LessonDef
 import org.scalajs.dom
 import scala.concurrent.Future
@@ -39,7 +39,8 @@ final class LessonController(
     logc(s"LESSON:PHASE ${state.phase}")
     line(lesson.title)
     line(Messages.visaIntro)
-    playTranscript(annotated = false)
+    console.replay(lesson.demo.steps, Speed.FullSpeed, lang)
+    console.writeLine(Messages.pressEnter(lang))
 
   /** Each submitted console line (FR-009/FR-010). */
   def handle(raw: String): Unit =
@@ -55,8 +56,13 @@ final class LessonController(
     case MetaCommand.Abort =>
       advance(LoopEvent.Abort); line(Messages.aborted); logc("LESSON:ABORT")
     case MetaCommand.RepeatDemo =>
-      if state.phase == Phase.Prova then line(Messages.demoInProva)
-      else playTranscript(annotated = state.phase == Phase.Instruera)
+      if state.phase == Phase.Prova then
+        line(Messages.demoInProva); logc("LESSON:REPLAY-REFUSED")
+      else
+        val speed = if state.phase == Phase.Instruera then Speed.Stepwise else Speed.FullSpeed
+        console.replay(lesson.demo.steps, speed, lang)
+        logc("LESSON:REPLAY")
+        promptCurrent() // return to the same drill, no score change (US4)
     case MetaCommand.Hint =>
       if state.phase == Phase.Prova then line(Messages.hintInProva)
       else giveHint()
@@ -76,7 +82,8 @@ final class LessonController(
       advance(LoopEvent.AdvancePhase) // -> Instruera
       logc(s"LESSON:PHASE ${state.phase}")
       line(Messages.instrueraIntro)
-      playTranscript(annotated = true)
+      console.replay(lesson.demo.steps, Speed.Stepwise, lang)
+      console.writeLine(Messages.pressEnter(lang))
     case Phase.Instruera =>
       advance(LoopEvent.AdvancePhase) // -> OvaParts
       logc(s"LESSON:PHASE ${state.phase}")
@@ -166,12 +173,3 @@ final class LessonController(
     lesson.parts.lift(partIdx).foreach(p => line(p.prompt)); console.prompt("öva> ")
   private def promptWhole(): Unit = { line(lesson.whole.prompt); console.prompt("helhet> ") }
   private def promptExam(): Unit = { line(lesson.exam.prompt); console.prompt("pröva> ") }
-
-  private def playTranscript(annotated: Boolean): Unit =
-    lesson.demo.steps.foreach { step =>
-      console.writeLine(s"sql> ${step.input}")
-      console.writeLine(step.output.cols.mkString(" | "))
-      step.output.rows.foreach(r => console.writeLine(r.map(_.getOrElse("∅")).mkString(" | ")))
-      if annotated then step.annotation.foreach(a => line(a))
-    }
-    console.writeLine(Messages.pressEnter(lang))

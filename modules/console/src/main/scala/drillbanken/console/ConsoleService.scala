@@ -3,6 +3,11 @@ package drillbanken.console
 import com.raquo.laminar.api.L.*
 import org.scalajs.dom
 import scala.scalajs.js
+import drillbanken.domain.{TranscriptStep, Language}
+
+/** VISA = full speed (no annotations); INSTRUERA = stepwise (annotations shown). */
+enum Speed:
+  case FullSpeed, Stepwise
 
 /** Narrow console contract over xterm.js (contracts/console-service.md, Principle II). */
 trait ConsoleService:
@@ -11,6 +16,9 @@ trait ConsoleService:
   def writeLine(text: String): Unit
   def clear(): Unit
   def prompt(label: String): Unit
+
+  /** Replay a demonstration transcript (FR-002, US4). `lang` selects annotation language. */
+  def replay(steps: List[TranscriptStep], speed: Speed, lang: Language): Unit
 
   /** Emits a full line whenever the learner presses Enter (FR-008). */
   def onSubmit: EventStream[String]
@@ -50,6 +58,14 @@ final class XtermConsoleService extends ConsoleService:
   def write(text: String): Unit = term.write(text)
   def writeLine(text: String): Unit = term.writeln(text)
   def clear(): Unit = term.clear()
+
+  def replay(steps: List[TranscriptStep], speed: Speed, lang: Language): Unit =
+    steps.foreach { step =>
+      term.writeln(s"sql> ${step.input}")
+      term.writeln(step.output.cols.mkString(" | "))
+      step.output.rows.foreach(r => term.writeln(r.map(_.getOrElse("∅")).mkString(" | ")))
+      if speed == Speed.Stepwise then step.annotation.foreach(a => term.writeln(a(lang)))
+    }
   def prompt(label: String): Unit =
     promptLabel = label
     term.write(label)
