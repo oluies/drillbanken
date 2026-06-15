@@ -60,7 +60,11 @@ lazy val app = project
     name := "drillbanken-app",
     scalaJSUseMainModuleInitializer := true,
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.ESModule)),
-    libraryDependencies += "com.raquo" %%% "laminar" % laminarV
+    libraryDependencies ++= Seq(
+      "com.raquo" %%% "laminar" % laminarV,
+      "com.lihaoyi" %%% "upickle" % "4.0.2",
+      "org.scalameta" %%% "munit" % munitV % Test
+    )
   )
 
 lazy val root = project

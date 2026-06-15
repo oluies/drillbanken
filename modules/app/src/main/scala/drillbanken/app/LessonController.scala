@@ -19,7 +19,10 @@ final class LessonController(
     engine: EngineService,
     console: ConsoleService,
     lesson: LessonDef,
-    lang: Language
+    lang: Language,
+    resume: Option[LessonState] = None,
+    onTransition: LessonState => Unit = _ => (),
+    onGraded: Grade => Unit = _ => ()
 ):
   private val outline = lesson.outline
   private var state: LessonState = Loop.start(outline, None)
@@ -32,15 +35,29 @@ final class LessonController(
 
   private def advance(ev: LoopEvent): Unit =
     Loop.advance(outline, state, ev) match
-      case Right(s) => state = s
+      case Right(s) => state = s; onTransition(state)
       case Left(_)  => () // controller guards transitions; ignore illegal
 
-  def start(): Unit =
+  private def freshStart(): Unit =
     logc(s"LESSON:PHASE ${state.phase}")
     line(lesson.title)
     line(Messages.visaIntro)
     console.replay(lesson.demo.steps, Speed.FullSpeed, lang)
     console.writeLine(Messages.pressEnter(lang))
+
+  def start(): Unit =
+    resume match
+      case Some(s) if s.status == LessonStatus.InProgress &&
+            (s.phase == Phase.OvaParts || s.phase == Phase.OvaWhole || s.phase == Phase.Prova) =>
+        state = s
+        hintsUsed = s.hintsUsedTotal
+        partIdx = outline.parts.indexWhere(p => !s.partResults.get(p).exists(_.passed)) match
+          case -1 => math.max(0, outline.parts.size - 1)
+          case i  => i
+        logc(s"LESSON:RESUME ${state.phase}")
+        line(lesson.title)
+        promptCurrent()
+      case _ => freshStart()
 
   /** Each submitted console line (FR-009/FR-010). */
   def handle(raw: String): Unit =
@@ -135,6 +152,7 @@ final class LessonController(
     provaAttempts += 1
     runCheck(sql, lesson.exam.reference.sql, lesson.exam.checker).foreach { outcome =>
       val grade = Grading.grade(lesson.exam.rubric, provaAttempts, hintsUsed, None, outcome)
+      onGraded(grade)
       console.writeLine(Messages.points(grade.points, lang))
       logc(s"LESSON:GRADE ${grade.points} ${grade.passed}")
       val missed = if grade.passed then Nil else outline.parts
