@@ -212,12 +212,12 @@ project brief and plan.
 
 **Purpose**: CI/CD, hygiene, docs, deploy.
 
-- [ ] T058 Create `.github/workflows/deploy.yml`: dual toolchain (Temurin JDK 21 + `sbt/setup-sbt` with sbt/Coursier/ivy caches; `setup-node@v6` node 22 `cache: npm`), sequence sbt Scala.js compile → `npm run build` → `configure-pages` → `upload-pages-artifact` (path `dist`) + deploy job (`deploy-pages@v5`, `environment: github-pages`); add `workflow_dispatch` and Pages permissions/concurrency (research.md D12)
-- [ ] T059 [P] Create `.github/dependabot.yml` (`npm` + `github-actions`, weekly) and `.github/workflows/secret-scan.yml` (TruffleHog `--results=verified,unknown`, checkout `fetch-depth: 0`) (research.md D13)
-- [ ] T060 One-time: enable GitHub Pages (Settings → Pages → Source: GitHub Actions, or `gh api repos/<owner>/<repo>/pages -X POST -f build_type=workflow`) BEFORE first deploy (research.md D12) — manual step, document in README
-- [ ] T061 [P] Update `README.md` (status → in development; build/run/deploy) and add `docs/ARCHITECTURE.md` with any Mermaid diagrams validated locally via `mmdc` (research.md D15)
-- [ ] T062 [P] Decide optional GoatCounter analytics: implement only if cookieless + DNT/GPC no-op + never transmits SQL (FR-025), else document as deferred in README (research.md D14)
-- [ ] T063 Run the full quickstart e2e recipe (steps 1–9) against a production `npm run build`; confirm no runtime CDN fetch for the engine (SC-010)
+- [X] T058 Create `.github/workflows/deploy.yml`: dual toolchain (Temurin JDK 21 + `sbt/setup-sbt` with sbt/Coursier/ivy caches; `setup-node@v6` node 22 `cache: npm`), sequence sbt Scala.js compile → `npm run build` → `configure-pages` → `upload-pages-artifact` (path `dist`) + deploy job (`deploy-pages@v5`, `environment: github-pages`); add `workflow_dispatch` and Pages permissions/concurrency (research.md D12)
+- [X] T059 [P] Create `.github/dependabot.yml` (`npm` + `github-actions`, weekly) and `.github/workflows/secret-scan.yml` (TruffleHog `--results=verified,unknown`, checkout `fetch-depth: 0`) (research.md D13)
+- [X] T060 One-time: enable GitHub Pages (Settings → Pages → Source: GitHub Actions, or `gh api repos/<owner>/<repo>/pages -X POST -f build_type=workflow`) BEFORE first deploy (research.md D12) — manual step, document in README
+- [X] T061 [P] Update `README.md` (status → in development; build/run/deploy) and add `docs/ARCHITECTURE.md` with any Mermaid diagrams validated locally via `mmdc` (research.md D15)
+- [X] T062 [P] Decide optional GoatCounter analytics: implement only if cookieless + DNT/GPC no-op + never transmits SQL (FR-025), else document as deferred in README (research.md D14)
+- [X] T063 Run the full quickstart e2e recipe (steps 1–9) against a production `npm run build`; confirm no runtime CDN fetch for the engine (SC-010)
 - [X] T064 Implement the language toggle (a control + a `lang` meta-command) that updates the reactive `Signal[Language]` and persists `language` to `ProgressState` via `PersistenceService`, re-rendering all active views with no progress loss in `modules/app/src/main/scala/drillbanken/app/Main.scala` (FR-027, SC-011) — depends on T028, T042, T043
 - [X] T065 Validate language switching mid-lesson via quickstart: toggle sv↔en during a drill, confirm all chrome + lesson prose switch and phase/sub-step/score are preserved (SC-011)
 

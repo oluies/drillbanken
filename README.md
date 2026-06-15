@@ -9,20 +9,49 @@ Everything runs client-side: SQL is executed by [DuckDB-WASM](https://github.com
 in the browser, the UI is a terminal (xterm.js), and the whole thing is a static
 site deployed to GitHub Pages. No backend.
 
-> **Status: specification phase.** This repository currently holds only the
-> specification, scaffolded with [GitHub Spec Kit](https://github.com/github/spec-kit).
-> No application code yet — by design. See [`docs/spec-prompt.md`](docs/spec-prompt.md)
-> for the driving brief and the architectural principles.
+> **Status: in development.** All six v1 user stories are implemented and verified
+> (full lesson loop, fail→reroute, resume, replay, author-a-lesson, export/import) plus a
+> bilingual toggle. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and
+> [`docs/spec-prompt.md`](docs/spec-prompt.md) for the driving brief.
 
-## Stack (planned)
+## Stack
 
 - **Scala 3 + Scala.js** for all frontend code; **Laminar** (Airstream signals) for UI.
 - A pure, framework-free **domain module** (lesson state machine, grading, progression)
   with **munit + ScalaCheck** property tests.
 - **DuckDB-WASM** as the SQL engine; **xterm.js** as the console; both behind a
-  narrow, explicitly typed interop facade.
+  narrow, hand-written `js.native` interop facade.
 - **Vite** (via `@scala-js/vite-plugin-scalajs`) producing a static `dist/`,
   deployed to **GitHub Pages** via GitHub Actions.
+
+## Develop
+
+```bash
+npm install          # deps (Vite 7, DuckDB-WASM, xterm)
+npm run dev          # dev server (vite-plugin-scalajs drives the sbt link)
+sbt domain/test content/test app/test   # unit tests (Scala.js on node)
+npm run build        # static dist/
+```
+
+End-to-end checks run headless against the built app (Chrome via puppeteer-core):
+`npm run e2e` (engine spike), `e2e:lesson`, `e2e:us2-us4`, `e2e:persistence`, `e2e:lang`.
+
+## Console commands
+
+Type SQL to answer drills. Meta-commands: `help`, `hint`, `progress`, `repeat-demo`,
+`abort`, `lang` (toggle sv/en).
+
+## Deploy
+
+Pushing to `main` builds and deploys to GitHub Pages (`.github/workflows/deploy.yml`,
+dual JVM+Node toolchain). Pages must be enabled once (Settings → Pages → Source: GitHub
+Actions) before the first run.
+
+## Privacy / analytics
+
+No backend, no cookies; progress stays on the device (exportable as a file). Optional
+cookieless analytics (GoatCounter) is **deferred** for v1 — it ships only if it can be a
+no-op under DNT/GPC and never transmit learner SQL.
 
 ## Pedagogy is the architecture
 
