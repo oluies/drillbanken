@@ -47,7 +47,8 @@ object Main:
       h1("Drillbänken"),
       p("Konsol-SQL-tutor · console SQL tutor"),
       p(em(child.text <-- statusVar.signal.map(s => "Engine: " + statusText(s)))),
-      consoleMount
+      consoleMount,
+      SchemaPanel.view
     )
     val container = Option(dom.document.getElementById("app")).getOrElse {
       val el = dom.document.createElement("div"); el.setAttribute("id", "app")
