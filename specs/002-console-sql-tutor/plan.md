@@ -35,7 +35,8 @@ definitions are consumed only as input to ScalablyTyped facade generation.
 - SQL engine: `@duckdb/duckdb-wasm ^1.33.1-dev45.0` (DuckDB ~v1.5.x via `PRAGMA version`)
 - Console: xterm.js (`@xterm/xterm`)
 - Interop: ScalablyTyped converter (sbt plugin) generating Scala facades for the above
-- Build: sbt + Scala.js plugin, `@scala-js/vite-plugin-scalajs`, Vite 8
+- Build: sbt + Scala.js plugin, `@scala-js/vite-plugin-scalajs`, Vite 7 (the plugin
+  supports `vite 4.1.4 - 7`; esbuild pinned to the patched 0.28.1 via npm `overrides`)
 - Tests: munit + ScalaCheck (domain module)
 
 **Storage**: Browser-local only — `localStorage` for progress (with OPFS considered for
