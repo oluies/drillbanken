@@ -38,12 +38,12 @@ project brief and plan.
 
 **Purpose**: sbt + Scala.js + Vite project skeleton.
 
-- [ ] T001 Create sbt multi-module build: `build.sbt` defining `domain`, `engine`, `console`, `content`, `app` modules (app aggregates; domain has no Laminar/DOM deps), plus `project/build.properties`
+- [X] T001 Create sbt multi-module build: `build.sbt` defining `domain`, `engine`, `console`, `content`, `app` modules (app aggregates; domain has no Laminar/DOM deps), plus `project/build.properties`
 - [ ] T002 Configure `project/plugins.sbt` with `sbt-scalajs`, the Scala.js linker output for Vite, and the ScalablyTyped converter plugin
-- [ ] T003 [P] Create `package.json` with Vite 8, `@duckdb/duckdb-wasm ^1.33.1-dev45.0`, `@xterm/xterm`, `@scala-js/vite-plugin-scalajs`, and TS type-defs for ScalablyTyped; add `dev`/`build` scripts
-- [ ] T004 [P] Create `vite.config.ts` with `base: "./"`, `build.target: "es2022"`, the `@scala-js/vite-plugin-scalajs` integration, and `?url` handling for the DuckDB `.wasm` + worker assets
-- [ ] T005 [P] Create `index.html` (mount node for the Scala.js app) and `tsconfig.json` (only to satisfy ScalablyTyped type-def resolution)
-- [ ] T006 [P] Verify `.gitignore` covers `node_modules/ dist/ target/ .bsp/ .bloop/ .metals/ .scala-build/` (append any missing) and create empty `modules/{domain,engine,console,content,app}` source trees
+- [X] T003 [P] Create `package.json` with Vite 8, `@duckdb/duckdb-wasm ^1.33.1-dev45.0`, `@xterm/xterm`, `@scala-js/vite-plugin-scalajs`, and TS type-defs for ScalablyTyped; add `dev`/`build` scripts
+- [X] T004 [P] Create `vite.config.ts` with `base: "./"`, `build.target: "es2022"`, the `@scala-js/vite-plugin-scalajs` integration, and `?url` handling for the DuckDB `.wasm` + worker assets
+- [X] T005 [P] Create `index.html` (mount node for the Scala.js app) and `tsconfig.json` (only to satisfy ScalablyTyped type-def resolution)
+- [X] T006 [P] Verify `.gitignore` covers `node_modules/ dist/ target/ .bsp/ .bloop/ .metals/ .scala-build/` (append any missing) and create empty `modules/{domain,engine,console,content,app}` source trees
 
 ---
 
@@ -68,10 +68,10 @@ project brief and plan.
 
 **Content scaffolding (needed by all stories):**
 
-- [ ] T016 [P] Define the lesson content DSL types (`LessonDef`, `Transcript`, `TranscriptStep`, `PartDrill`, `WholeTask`, `Exam`, `Hint`, `ReferenceSolution`, `SeedRef`) in `modules/content/src/main/scala/drillbanken/content/LessonDef.scala` (contracts/lesson-dsl.md)
-- [ ] T017 [P] Implement the trading-book seed dataset (DDL/DML for `traders`, `instruments`, `trades` with deliberate NULLs + orphan rows) in `modules/content/src/main/scala/drillbanken/content/SeedData.scala` (research.md D6, FR-020)
+- [X] T016 [P] Define the lesson content DSL types (`LessonDef`, `Transcript`, `TranscriptStep`, `PartDrill`, `WholeTask`, `Exam`, `Hint`, `ReferenceSolution`, `SeedRef`) in `modules/content/src/main/scala/drillbanken/content/LessonDef.scala` (contracts/lesson-dsl.md)
+- [X] T017 [P] Implement the trading-book seed dataset (DDL/DML for `traders`, `instruments`, `trades` with deliberate NULLs + orphan rows) in `modules/content/src/main/scala/drillbanken/content/SeedData.scala` (research.md D6, FR-020)
 - [ ] T018 Implement `EngineService.resetSeed()` to run `SeedData` and wire seed execution into bootstrap (FR-020)
-- [ ] T019 Create `Curriculum` registry + startup validation (unique/ordered `sequence`) in `modules/content/src/main/scala/drillbanken/content/Curriculum.scala`
+- [X] T019 Create `Curriculum` registry + startup validation (unique/ordered `sequence`) in `modules/content/src/main/scala/drillbanken/content/Curriculum.scala`
 - [ ] T020 [P] Implement the meta-command parser (`help|hint|progress|repeat-demo|abort`, else → SQL) in `modules/app/src/main/scala/drillbanken/app/MetaCommand.scala` (FR-009, FR-010)
 
 **Checkpoint**: Foundation + spike green — user stories can begin.
