@@ -56,7 +56,10 @@ object Main:
     render(container, view)
     consoleSvc.open(consoleMount.ref)
 
-    consoleSvc.onSubmit.foreach(line => controller.foreach(_.handle(line)))(unsafeWindowOwner)
+    consoleSvc.onSubmit.foreach { line =>
+      dom.console.log(s"SUBMIT:$line")
+      controller.foreach(_.handle(line))
+    }(unsafeWindowOwner)
 
     engine.boot().foreach { _ =>
       statusVar.set(engine.currentStatus)
