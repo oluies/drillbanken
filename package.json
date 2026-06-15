@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "e2e": "node scripts/spike-e2e.mjs",
     "e2e:lesson": "node scripts/lesson-e2e.mjs",
-    "e2e:us2-us4": "node scripts/us2-us4-e2e.mjs"
+    "e2e:us2-us4": "node scripts/us2-us4-e2e.mjs",
+    "e2e:persistence": "node scripts/persistence-e2e.mjs"
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.33.1-dev45.0",

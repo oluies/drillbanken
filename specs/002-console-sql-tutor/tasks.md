@@ -143,9 +143,9 @@ project brief and plan.
 ### Implementation for User Story 3
 
 - [X] T042 [P] [US3] Implement `ProgressState`, `LessonProgress`, and progression rules (`Progression.applyGrade/isUnlocked`, unlock-on-pass, streak/insignia) in `modules/domain/src/main/scala/drillbanken/domain/progress/Progression.scala` (FR-015, FR-016, FR-017)
-- [ ] T043 [US3] Implement `PersistenceService.load/save` over `localStorage` with JSON (de)serialization of `ProgressState` (incl. `LessonState` resume snapshot) in `modules/app/src/main/scala/drillbanken/app/PersistenceService.scala` (FR-021, FR-022)
-- [ ] T044 [US3] Wire load-on-start + save-on-transition into `Main`/`LessonController`; resume to saved phase/sub-step (FR-022)
-- [ ] T045 [US3] Validate US3 end-to-end via quickstart recipe step 6
+- [X] T043 [US3] Implement `PersistenceService.load/save` over `localStorage` with JSON (de)serialization of `ProgressState` (incl. `LessonState` resume snapshot) in `modules/app/src/main/scala/drillbanken/app/PersistenceService.scala` (FR-021, FR-022)
+- [X] T044 [US3] Wire load-on-start + save-on-transition into `Main`/`LessonController`; resume to saved phase/sub-step (FR-022)
+- [X] T045 [US3] Validate US3 end-to-end via quickstart recipe step 6
 
 **Checkpoint**: Resume works across reloads; US1–US2 still pass.
 
@@ -196,13 +196,13 @@ project brief and plan.
 
 ### Tests for User Story 6 (write first)
 
-- [ ] T054 [P] [US6] munit tests for `export`/`importFrom`: round-trip identity; `BadJson` and `UnsupportedSchema` leave state unchanged (FR-023) in `modules/app/src/test/scala/drillbanken/app/PersistenceImportSpec.scala`
+- [X] T054 [P] [US6] munit tests for `export`/`importFrom`: round-trip identity; `BadJson` and `UnsupportedSchema` leave state unchanged (FR-023) in `modules/app/src/test/scala/drillbanken/app/PersistenceImportSpec.scala`
 
 ### Implementation for User Story 6
 
-- [ ] T055 [US6] Implement `PersistenceService.export` (JSON + `schemaVersion`) and `importFrom` (validate JSON → schema → structure; non-mutating on failure) in `PersistenceService.scala` (FR-023)
-- [ ] T056 [US6] Add export/import UI affordances (download/upload) wired to `PersistenceService` in `Main.scala`/console flow
-- [ ] T057 [US6] Validate US6 end-to-end via quickstart recipe step 7
+- [X] T055 [US6] Implement `PersistenceService.export` (JSON + `schemaVersion`) and `importFrom` (validate JSON → schema → structure; non-mutating on failure) in `PersistenceService.scala` (FR-023)
+- [X] T056 [US6] Add export/import UI affordances (download/upload) wired to `PersistenceService` in `Main.scala`/console flow
+- [X] T057 [US6] Validate US6 end-to-end via quickstart recipe step 7
 
 **Checkpoint**: All user stories independently functional.
 
