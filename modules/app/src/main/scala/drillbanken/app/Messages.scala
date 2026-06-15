@@ -37,9 +37,10 @@ object Messages:
   val passedExam = LocalizedText(sv = "Godkänd!", en = "Passed!")
   val failedExam = LocalizedText(sv = "Underkänd — öva på delarna nedan.", en = "Failed — drill the parts below.")
   val helpText = LocalizedText(
-    sv = "Kommandon: help, hint, progress, repeat-demo, abort. Allt annat körs som SQL.",
-    en = "Commands: help, hint, progress, repeat-demo, abort. Anything else runs as SQL."
+    sv = "Kommandon: help, hint, progress, tables, describe <tabell>, repeat-demo, lang, abort. Allt annat körs som SQL.",
+    en = "Commands: help, hint, progress, tables, describe <table>, repeat-demo, lang, abort. Anything else runs as SQL."
   )
+  val describeUsage = LocalizedText(sv = "Användning: describe <tabell>", en = "Usage: describe <table>")
   val aborted = LocalizedText(sv = "Avbrutet.", en = "Aborted.")
 
   def points(p: Int, lang: Language): String =

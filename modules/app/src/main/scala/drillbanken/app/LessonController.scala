@@ -85,6 +85,11 @@ final class LessonController(
     case MetaCommand.Hint =>
       if state.phase == Phase.Prova then line(Messages.hintInProva)
       else giveHint()
+    case MetaCommand.Tables =>
+      runSchema("SHOW TABLES", "tables") // read-only; allowed in any phase
+    case MetaCommand.Describe(t) =>
+      if t.isEmpty then { line(Messages.describeUsage); promptCurrent() }
+      else runSchema(s"DESCRIBE $t", s"describe $t")
     case MetaCommand.Lang =>
       lang = if lang == Language.Sv then Language.En else Language.Sv
       onLanguageChange(lang) // persisted by Main (FR-027, SC-011) — progress untouched
@@ -198,3 +203,18 @@ final class LessonController(
     lesson.parts.lift(partIdx).foreach(p => line(p.prompt)); console.prompt("öva> ")
   private def promptWhole(): Unit = { line(lesson.whole.prompt); console.prompt("helhet> ") }
   private def promptExam(): Unit = { line(lesson.exam.prompt); console.prompt("pröva> ") }
+
+  /** Read-only schema exploration (`tables`, `describe <t>`) — never counts as a drill
+    * attempt and never advances the loop.
+    */
+  private def runSchema(sql: String, label: String): Unit =
+    engine.exec(sql).onComplete {
+      case Success(qr) =>
+        printResult(qr); logc(s"SCHEMA:$label"); promptCurrent()
+      case Failure(e) =>
+        console.writeLine(s"error: ${e.getMessage}"); logc(s"SCHEMA-ERR:$label"); promptCurrent()
+    }
+
+  private def printResult(qr: QueryResult): Unit =
+    console.writeLine(qr.cols.mkString(" | "))
+    qr.rows.foreach(r => console.writeLine(r.map(_.getOrElse("∅")).mkString(" | ")))

@@ -11,6 +11,10 @@ class MetaCommandSpec extends munit.FunSuite:
     assertEquals(MetaCommand.parse("\\abort"), ConsoleInput.Meta(MetaCommand.Abort))
     assertEquals(MetaCommand.parse("lang"), ConsoleInput.Meta(MetaCommand.Lang))
     assertEquals(MetaCommand.parse("LANGUAGE"), ConsoleInput.Meta(MetaCommand.Lang))
+    assertEquals(MetaCommand.parse("tables"), ConsoleInput.Meta(MetaCommand.Tables))
+    assertEquals(MetaCommand.parse("show tables"), ConsoleInput.Meta(MetaCommand.Tables))
+    assertEquals(MetaCommand.parse("describe traders"), ConsoleInput.Meta(MetaCommand.Describe("traders")))
+    assertEquals(MetaCommand.parse("DESC  trades"), ConsoleInput.Meta(MetaCommand.Describe("trades")))
 
   test("anything else is SQL (trimmed, original case preserved)"):
     assertEquals(MetaCommand.parse("  SELECT 1  "), ConsoleInput.Sql("SELECT 1"))
