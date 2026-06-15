@@ -7,7 +7,8 @@ object Curriculum:
 
   /** All lessons, sorted by unlock order. */
   val all: List[LessonDef] = List(
-    lessons.Lesson01.lesson
+    lessons.Lesson01.lesson,
+    lessons.Lesson02.lesson
   ).sortBy(_.sequence)
 
   /** Validate the curriculum at startup. A duplicate `sequence`, or a lesson with no

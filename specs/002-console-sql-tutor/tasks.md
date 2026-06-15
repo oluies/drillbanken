@@ -123,8 +123,8 @@ project brief and plan.
 ### Implementation for User Story 2
 
 - [X] T038 [US2] Implement the re-entry transition `Loop.advance` for accepted "drill again" → re-enter named `OvaParts` drills (without resetting passed drills' best state) in `modules/domain/src/main/scala/drillbanken/domain/loop/Loop.scala`
-- [ ] T039 [US2] Wire the reflection screen's "drill again" acceptance to the re-entry transition in `LessonController.scala` (FR-007)
-- [ ] T040 [US2] Validate US2 end-to-end via quickstart recipe step 4
+- [X] T039 [US2] Wire the reflection screen's "drill again" acceptance to the re-entry transition in `LessonController.scala` (FR-007)
+- [X] T040 [US2] Validate US2 end-to-end via quickstart recipe step 4
 
 **Checkpoint**: Fail→reroute loop works; US1 still passes.
 
@@ -163,9 +163,9 @@ project brief and plan.
 
 ### Implementation for User Story 4
 
-- [ ] T047 [US4] Implement `ConsoleService.replay(steps, speed)` (FullSpeed / Stepwise+annotations) in `modules/console/src/main/scala/drillbanken/console/ConsoleService.scala` (contracts/console-service.md)
-- [ ] T048 [US4] Wire the `repeat-demo` meta-command to replay VISA and restore the current drill state; refuse during PRÖVA in `LessonController.scala` (FR-010)
-- [ ] T049 [US4] Validate US4 end-to-end via quickstart recipe step 5
+- [X] T047 [US4] Implement `ConsoleService.replay(steps, speed)` (FullSpeed / Stepwise+annotations) in `modules/console/src/main/scala/drillbanken/console/ConsoleService.scala` (contracts/console-service.md)
+- [X] T048 [US4] Wire the `repeat-demo` meta-command to replay VISA and restore the current drill state; refuse during PRÖVA in `LessonController.scala` (FR-010)
+- [X] T049 [US4] Validate US4 end-to-end via quickstart recipe step 5
 
 **Checkpoint**: Demo replay works; US1–US3 still pass.
 
@@ -179,10 +179,10 @@ project brief and plan.
 
 ### Implementation for User Story 5
 
-- [ ] T050 [P] [US5] Author a second seeded lesson (anti-join / NULL focus on the trading book) in `modules/content/src/main/scala/drillbanken/content/lessons/Lesson02.scala` and register it in `Curriculum`
-- [ ] T051 [US5] Confirm startup validation rejects a duplicate `sequence` and that omitting a required `LocalizedText`/field is a compile error (extend `Curriculum` validation messages) (FR-019)
-- [ ] T052 [P] [US5] Write the lesson-authoring guide in `docs/authoring-lessons.md` referencing `contracts/lesson-dsl.md`
-- [ ] T053 [US5] Validate US5 end-to-end via quickstart recipe step 8
+- [X] T050 [P] [US5] Author a second seeded lesson (anti-join / NULL focus on the trading book) in `modules/content/src/main/scala/drillbanken/content/lessons/Lesson02.scala` and register it in `Curriculum`
+- [X] T051 [US5] Confirm startup validation rejects a duplicate `sequence` and that omitting a required `LocalizedText`/field is a compile error (extend `Curriculum` validation messages) (FR-019)
+- [X] T052 [P] [US5] Write the lesson-authoring guide in `docs/authoring-lessons.md` referencing `contracts/lesson-dsl.md`
+- [X] T053 [US5] Validate US5 end-to-end via quickstart recipe step 8
 
 **Checkpoint**: Curriculum grows via content only; US1–US4 still pass.
 
