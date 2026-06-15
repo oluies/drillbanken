@@ -4,7 +4,7 @@ package drillbanken.domain
   * treated as SQL (FR-009). Pure + testable; parsing lives in the domain.
   */
 enum MetaCommand:
-  case Help, Hint, Progress, RepeatDemo, Abort
+  case Help, Hint, Progress, RepeatDemo, Abort, Lang
 
 /** A parsed console line. */
 enum ConsoleInput:
@@ -22,4 +22,5 @@ object MetaCommand:
       case "progress"               => ConsoleInput.Meta(Progress)
       case "repeat-demo" | "repeat" => ConsoleInput.Meta(RepeatDemo)
       case "abort" | "quit"         => ConsoleInput.Meta(Abort)
+      case "lang" | "language"      => ConsoleInput.Meta(Lang)
       case _                        => ConsoleInput.Sql(trimmed)

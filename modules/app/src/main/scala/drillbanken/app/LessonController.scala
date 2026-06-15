@@ -19,16 +19,18 @@ final class LessonController(
     engine: EngineService,
     console: ConsoleService,
     lesson: LessonDef,
-    lang: Language,
+    lang0: Language,
     resume: Option[LessonState] = None,
     onTransition: LessonState => Unit = _ => (),
-    onGraded: Grade => Unit = _ => ()
+    onGraded: Grade => Unit = _ => (),
+    onLanguageChange: Language => Unit = _ => ()
 ):
   private val outline = lesson.outline
   private var state: LessonState = Loop.start(outline, None)
   private var partIdx: Int = 0
   private var hintsUsed: Int = 0
   private var provaAttempts: Int = 0
+  private var lang: Language = lang0
 
   private def line(t: LocalizedText): Unit = console.writeLine(t(lang))
   private def logc(s: String): Unit = dom.console.log(s)
@@ -83,6 +85,11 @@ final class LessonController(
     case MetaCommand.Hint =>
       if state.phase == Phase.Prova then line(Messages.hintInProva)
       else giveHint()
+    case MetaCommand.Lang =>
+      lang = if lang == Language.Sv then Language.En else Language.Sv
+      onLanguageChange(lang) // persisted by Main (FR-027, SC-011) — progress untouched
+      logc(s"LESSON:LANG $lang")
+      promptCurrent() // subsequent chrome + prompts render in the new language
 
   private def giveHint(): Unit =
     val hints = state.phase match

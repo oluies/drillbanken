@@ -78,6 +78,10 @@ object Main:
                 onGraded = grade => {
                   progress = Progression.applyGrade(progress, lesson.id, nextId, grade)
                   persist.save(progress)
+                },
+                onLanguageChange = l => {
+                  progress = progress.copy(language = l) // persist choice; progress intact (SC-011)
+                  persist.save(progress)
                 }
               )
               controller = Some(c)

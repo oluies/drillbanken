@@ -9,6 +9,8 @@ class MetaCommandSpec extends munit.FunSuite:
     assertEquals(MetaCommand.parse(":progress"), ConsoleInput.Meta(MetaCommand.Progress))
     assertEquals(MetaCommand.parse("repeat-demo"), ConsoleInput.Meta(MetaCommand.RepeatDemo))
     assertEquals(MetaCommand.parse("\\abort"), ConsoleInput.Meta(MetaCommand.Abort))
+    assertEquals(MetaCommand.parse("lang"), ConsoleInput.Meta(MetaCommand.Lang))
+    assertEquals(MetaCommand.parse("LANGUAGE"), ConsoleInput.Meta(MetaCommand.Lang))
 
   test("anything else is SQL (trimmed, original case preserved)"):
     assertEquals(MetaCommand.parse("  SELECT 1  "), ConsoleInput.Sql("SELECT 1"))

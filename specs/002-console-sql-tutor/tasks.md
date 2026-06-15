@@ -218,8 +218,8 @@ project brief and plan.
 - [ ] T061 [P] Update `README.md` (status → in development; build/run/deploy) and add `docs/ARCHITECTURE.md` with any Mermaid diagrams validated locally via `mmdc` (research.md D15)
 - [ ] T062 [P] Decide optional GoatCounter analytics: implement only if cookieless + DNT/GPC no-op + never transmits SQL (FR-025), else document as deferred in README (research.md D14)
 - [ ] T063 Run the full quickstart e2e recipe (steps 1–9) against a production `npm run build`; confirm no runtime CDN fetch for the engine (SC-010)
-- [ ] T064 Implement the language toggle (a control + a `lang` meta-command) that updates the reactive `Signal[Language]` and persists `language` to `ProgressState` via `PersistenceService`, re-rendering all active views with no progress loss in `modules/app/src/main/scala/drillbanken/app/Main.scala` (FR-027, SC-011) — depends on T028, T042, T043
-- [ ] T065 Validate language switching mid-lesson via quickstart: toggle sv↔en during a drill, confirm all chrome + lesson prose switch and phase/sub-step/score are preserved (SC-011)
+- [X] T064 Implement the language toggle (a control + a `lang` meta-command) that updates the reactive `Signal[Language]` and persists `language` to `ProgressState` via `PersistenceService`, re-rendering all active views with no progress loss in `modules/app/src/main/scala/drillbanken/app/Main.scala` (FR-027, SC-011) — depends on T028, T042, T043
+- [X] T065 Validate language switching mid-lesson via quickstart: toggle sv↔en during a drill, confirm all chrome + lesson prose switch and phase/sub-step/score are preserved (SC-011)
 
 ---
 
