@@ -72,7 +72,7 @@ project brief and plan.
 - [X] T017 [P] Implement the trading-book seed dataset (DDL/DML for `traders`, `instruments`, `trades` with deliberate NULLs + orphan rows) in `modules/content/src/main/scala/drillbanken/content/SeedData.scala` (research.md D6, FR-020)
 - [X] T018 Implement `EngineService.resetSeed()` to run `SeedData` and wire seed execution into bootstrap (FR-020)
 - [X] T019 Create `Curriculum` registry + startup validation (unique/ordered `sequence`) in `modules/content/src/main/scala/drillbanken/content/Curriculum.scala`
-- [ ] T020 [P] Implement the meta-command parser (`help|hint|progress|repeat-demo|abort`, else → SQL) in `modules/app/src/main/scala/drillbanken/app/MetaCommand.scala` (FR-009, FR-010)
+- [X] T020 [P] Implement the meta-command parser (`help|hint|progress|repeat-demo|abort`, else → SQL) in `modules/app/src/main/scala/drillbanken/app/MetaCommand.scala` (FR-009, FR-010)
 
 **Checkpoint**: Foundation + spike green — user stories can begin.
 
@@ -95,16 +95,16 @@ project brief and plan.
 - [X] T024 [US1] Implement the loop state machine `Loop.start/advance` with typed transitions + gates in `modules/domain/src/main/scala/drillbanken/domain/loop/Loop.scala` (data-model.md, contracts/domain-api.md)
 - [X] T025 [P] [US1] Implement `Check.canonicalize/check` (lowercase cols, stringify rows, sort unless order-sensitive; optional shapeRule) in `modules/domain/src/main/scala/drillbanken/domain/check/Check.scala`
 - [X] T026 [P] [US1] Implement `Grading.grade` (points from correctness/attempts/hints/time) + `Grading.reflect` (drillAgain) in `modules/domain/src/main/scala/drillbanken/domain/grade/Grading.scala`
-- [ ] T027 [US1] Author the first seeded lesson (`LessonDef` with transcript, parts+checkers, whole, exam rubric, bilingual prose) in `modules/content/src/main/scala/drillbanken/content/lessons/Lesson01.scala` and register it in `Curriculum`
-- [ ] T028 [P] [US1] Implement i18n string lookup driven by a reactive `Signal[Language]` (so all views re-render on language change) in `modules/app/src/main/scala/drillbanken/app/I18n.scala` (FR-027)
-- [ ] T029 [US1] Implement VISA phase view: replay the transcript at full speed via the console (FR-002) wired through `Loop`
-- [ ] T030 [US1] Implement INSTRUERA phase view: stepwise transcript replay with annotations (FR-002)
-- [ ] T031 [US1] Implement ÖVA(parts) phase view: per-drill prompt, SQL exec, live-checked pass/retry with immediate feedback (FR-003), unlimited repetition with no score change (FR-014)
-- [ ] T032 [US1] Implement ÖVA(whole) phase view: whole-task with `hint` meta-command applying a points cost (FR-004)
-- [ ] T033 [US1] Implement PRÖVA phase view: exam against slutkrav, hints disabled, grade computed via rubric (FR-005, FR-013)
-- [ ] T034 [US1] Implement the reflection screen: rubric breakdown + generated "drill again" list (FR-006)
-- [ ] T035 [US1] Wire `help`/`hint`/`progress` meta-commands into the loop controller in `modules/app/src/main/scala/drillbanken/app/LessonController.scala` (FR-010)
-- [ ] T036 [US1] Validate US1 end-to-end via quickstart recipe step 3 (full loop on Lesson01)
+- [X] T027 [US1] Author the first seeded lesson (`LessonDef` with transcript, parts+checkers, whole, exam rubric, bilingual prose) in `modules/content/src/main/scala/drillbanken/content/lessons/Lesson01.scala` and register it in `Curriculum`
+- [X] T028 [P] [US1] Implement bilingual i18n string lookup (UI chrome via `LocalizedText`) in `modules/app/src/main/scala/drillbanken/app/Messages.scala` (FR-027). NOTE: the reactive `Signal[Language]` live-toggle re-render is T064.
+- [X] T029 [US1] Implement VISA phase view: replay the transcript at full speed via the console (FR-002) wired through `Loop`
+- [X] T030 [US1] Implement INSTRUERA phase view: stepwise transcript replay with annotations (FR-002)
+- [X] T031 [US1] Implement ÖVA(parts) phase view: per-drill prompt, SQL exec, live-checked pass/retry with immediate feedback (FR-003), unlimited repetition with no score change (FR-014)
+- [X] T032 [US1] Implement ÖVA(whole) phase view: whole-task with `hint` meta-command applying a points cost (FR-004)
+- [X] T033 [US1] Implement PRÖVA phase view: exam against slutkrav, hints disabled, grade computed via rubric (FR-005, FR-013)
+- [X] T034 [US1] Implement the reflection screen: rubric breakdown + generated "drill again" list (FR-006)
+- [X] T035 [US1] Wire `help`/`hint`/`progress` meta-commands into the loop controller in `modules/app/src/main/scala/drillbanken/app/LessonController.scala` (FR-010)
+- [X] T036 [US1] Validate US1 end-to-end via quickstart recipe step 3 (full loop on Lesson01)
 
 **Checkpoint**: A full lesson loop is playable end to end (MVP).
 
