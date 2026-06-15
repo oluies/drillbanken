@@ -5,10 +5,10 @@ package drillbanken.content
   */
 object Curriculum:
 
-  /** All lessons, sorted by unlock order. Empty until lesson content lands. */
-  val all: List[LessonDef] = List
-    .empty[LessonDef]
-    .sortBy(_.sequence)
+  /** All lessons, sorted by unlock order. */
+  val all: List[LessonDef] = List(
+    lessons.Lesson01.lesson
+  ).sortBy(_.sequence)
 
   /** Validate the curriculum at startup. A duplicate `sequence`, or a lesson with no
     * part-drills, is a hard error (FR-015, FR-019).
