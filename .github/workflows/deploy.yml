@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v6
 
       # JVM toolchain for the Scala.js compile (net-new vs the Node-only reference repo).
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
