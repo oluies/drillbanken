@@ -29,16 +29,19 @@ lazy val content = project
     libraryDependencies += "org.scalameta" %%% "munit" % munitV % Test
   )
 
-// DuckDB-WASM service core (Laminar-free). TODO(T010): add ScalablyTyped facades for
-// @duckdb/duckdb-wasm; TODO(T011/T012): implement bootstrap + exec/Arrow materialization.
+// DuckDB-WASM service core (Laminar-free) behind the narrow EngineService (T010-T012).
+// Interop via hand-written js.native facades (see ADR in research.md D2 — ScalablyTyped
+// OOM'd the Scala compiler on the duckdb-wasm + Arrow facade surface).
 lazy val engine = project
   .in(file("modules/engine"))
   .enablePlugins(ScalaJSPlugin)
   .dependsOn(domain)
-  .settings(name := "drillbanken-engine")
+  .settings(
+    name := "drillbanken-engine",
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0"
+  )
 
-// xterm.js console adapter (facade + Laminar component). TODO(T010): ScalablyTyped facade
-// for @xterm/xterm; TODO(T013): implement ConsoleService.
+// xterm.js console adapter (facade + Laminar component) behind ConsoleService (T013).
 lazy val console = project
   .in(file("modules/console"))
   .enablePlugins(ScalaJSPlugin)

@@ -39,7 +39,7 @@ project brief and plan.
 **Purpose**: sbt + Scala.js + Vite project skeleton.
 
 - [X] T001 Create sbt multi-module build: `build.sbt` defining `domain`, `engine`, `console`, `content`, `app` modules (app aggregates; domain has no Laminar/DOM deps), plus `project/build.properties`
-- [ ] T002 Configure `project/plugins.sbt` with `sbt-scalajs`, the Scala.js linker output for Vite, and the ScalablyTyped converter plugin
+- [X] T002 Configure `project/plugins.sbt` with `sbt-scalajs` (Scala.js linker output for Vite). NOTE: ScalablyTyped converter was evaluated in T010 and rejected — see research.md D2 (compiler OOM); interop uses hand-written facades instead
 - [X] T003 [P] Create `package.json` with Vite 7 (plugin supports `4.1.4 - 7`; esbuild forced to patched 0.28.1 via `overrides`), `@duckdb/duckdb-wasm ^1.33.1-dev45.0`, `@xterm/xterm`, `@scala-js/vite-plugin-scalajs`, and TS type-defs for ScalablyTyped; add `dev`/`build` scripts
 - [X] T004 [P] Create `vite.config.ts` with `base: "./"`, `build.target: "es2022"`, the `@scala-js/vite-plugin-scalajs` integration, and `?url` handling for the DuckDB `.wasm` + worker assets
 - [X] T005 [P] Create `index.html` (mount node for the Scala.js app) and `tsconfig.json` (only to satisfy ScalablyTyped type-def resolution)
@@ -59,18 +59,18 @@ project brief and plan.
 
 **Interop spike (Milestone 0 — GATING):**
 
-- [ ] T010 Generate + compile ScalablyTyped facades for `@duckdb/duckdb-wasm` and `@xterm/xterm` (sbt build wiring in `engine`/`console`)
-- [ ] T011 Implement DuckDB-WASM bootstrap in `modules/engine/src/main/scala/drillbanken/engine/EngineService.scala`: `selectBundle` → `?url` `.wasm`+worker imports → `new Worker` → `AsyncDuckDB(VoidLogger)` → `instantiate` → `connect` → `PRAGMA version`; expose `status: Signal[EngineStatus]` (research.md D3, contracts/engine-service.md)
-- [ ] T012 Implement `EngineService.exec(sql): Future[QueryResult]` with Arrow materialization (cols from `schema.fields`; rows via `toArray().toJSON()`; bigint→string, Date→ISO, non-int number→fixed(6), null→null) and typed error mapping to `EngineError` (research.md D4)
-- [ ] T013 Implement `ConsoleService` over xterm in `modules/console/src/main/scala/drillbanken/console/ConsoleService.scala` (`open/write/writeLine/clear/onSubmit/prompt`) (contracts/console-service.md)
-- [ ] T014 Create Laminar app shell + `Main` in `modules/app/src/main/scala/drillbanken/app/Main.scala` that mounts the console, renders `EngineStatus`, runs one query into a Laminar table, and surfaces one deliberate SQL error as a typed `Failed` value
-- [ ] T015 **Spike acceptance gate**: run `npm run dev` and verify per quickstart — `Loading → Ready(<PRAGMA version>)`, `SELECT 42 AS answer` renders a table, `SELECT * FROM does_not_exist` shows a typed error, and no runtime CDN fetch for the engine
+- [X] T010 Interop facades for `@duckdb/duckdb-wasm` (`engine/DuckDbFacade.scala`) and `@xterm/xterm` (`console/XtermFacade.scala`). ScalablyTyped OOM'd the compiler → hand-written minimal `js.native` facades instead (research.md D2 ADR)
+- [X] T011 Implement DuckDB-WASM bootstrap in `modules/engine/src/main/scala/drillbanken/engine/EngineService.scala`: `selectBundle` → `?url` `.wasm`+worker imports → `new Worker` → `AsyncDuckDB(VoidLogger)` → `instantiate` → `connect` → `PRAGMA version`; expose `status: Signal[EngineStatus]` (research.md D3, contracts/engine-service.md)
+- [X] T012 Implement `EngineService.exec(sql): Future[QueryResult]` with Arrow materialization (cols from `schema.fields`; rows via `toArray().toJSON()`; bigint→string, Date→ISO, non-int number→fixed(6), null→null) and typed error mapping to `EngineError` (research.md D4)
+- [X] T013 Implement `ConsoleService` over xterm in `modules/console/src/main/scala/drillbanken/console/ConsoleService.scala` (`open/write/writeLine/clear/onSubmit/prompt`) (contracts/console-service.md)
+- [X] T014 Create Laminar app shell + `Main` in `modules/app/src/main/scala/drillbanken/app/Main.scala` that mounts the console, renders `EngineStatus`, runs one query into a Laminar table, and surfaces one deliberate SQL error as a typed `Failed` value
+- [X] T015 **Spike acceptance gate**: run `npm run dev` and verify per quickstart — `Loading → Ready(<PRAGMA version>)`, `SELECT 42 AS answer` renders a table, `SELECT * FROM does_not_exist` shows a typed error, and no runtime CDN fetch for the engine
 
 **Content scaffolding (needed by all stories):**
 
 - [X] T016 [P] Define the lesson content DSL types (`LessonDef`, `Transcript`, `TranscriptStep`, `PartDrill`, `WholeTask`, `Exam`, `Hint`, `ReferenceSolution`, `SeedRef`) in `modules/content/src/main/scala/drillbanken/content/LessonDef.scala` (contracts/lesson-dsl.md)
 - [X] T017 [P] Implement the trading-book seed dataset (DDL/DML for `traders`, `instruments`, `trades` with deliberate NULLs + orphan rows) in `modules/content/src/main/scala/drillbanken/content/SeedData.scala` (research.md D6, FR-020)
-- [ ] T018 Implement `EngineService.resetSeed()` to run `SeedData` and wire seed execution into bootstrap (FR-020)
+- [X] T018 Implement `EngineService.resetSeed()` to run `SeedData` and wire seed execution into bootstrap (FR-020)
 - [X] T019 Create `Curriculum` registry + startup validation (unique/ordered `sequence`) in `modules/content/src/main/scala/drillbanken/content/Curriculum.scala`
 - [ ] T020 [P] Implement the meta-command parser (`help|hint|progress|repeat-demo|abort`, else → SQL) in `modules/app/src/main/scala/drillbanken/app/MetaCommand.scala` (FR-009, FR-010)
 
