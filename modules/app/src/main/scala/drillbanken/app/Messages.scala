@@ -41,6 +41,7 @@ object Messages:
     en = "Commands: help, hint, progress, tables, describe <table>, repeat-demo, lang, abort. Anything else runs as SQL."
   )
   val describeUsage = LocalizedText(sv = "Användning: describe <tabell>", en = "Usage: describe <table>")
+  val continue = LocalizedText(sv = "Fortsätt ▸", en = "Continue ▸")
   val aborted = LocalizedText(sv = "Avbrutet.", en = "Aborted.")
 
   def points(p: Int, lang: Language): String =

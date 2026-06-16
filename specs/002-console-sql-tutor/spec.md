@@ -16,7 +16,11 @@
 - Q: What language for the UI chrome and lesson content in v1? → A: Both Swedish and English from the start, learner-selectable (bilingual, i18n-ready).
 - Q: How should the VISA/INSTRUERA demonstration be realized? → A: A declarative, timed transcript authored as lesson data and replayed by the console (not captured live); the lesson's reference solution is still executed live for checking.
 - Q: What format should lesson content take? → A: In-bundle typed Scala lesson-definition objects (a Scala content DSL) compiled into the bundle.
-- Q: How should Scala.js interop with xterm.js and DuckDB-WASM be structured? → A: ScalablyTyped-generated facades for both libraries.
+- Q: How should Scala.js interop with xterm.js and DuckDB-WASM be structured? → A: ScalablyTyped-generated facades for both libraries. (Superseded during the spike: hand-written `js.native` facades — ScalablyTyped OOM'd the compiler. See research.md D2.)
+
+### Session 2026-06-16 — interaction-medium pivot
+
+- Q: The console (xterm) doesn't work well for new users — what interface instead? → A: Replace the terminal with a **guided web GUI** (instruction + CodeMirror SQL editor + Run + results table + Hint/Replay/Next controls); remove the console. Constitution Principle II amended to v2.0.0; FR-008/009/010 updated. The pedagogy loop, checker, grading, progression, engine, content, and persistence are unchanged — only the presentation layer changes. Meta-commands become GUI controls; the schema panel stays.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -216,14 +220,17 @@ file, and confirm progress is restored.
 - **FR-007**: On a failing PRÖVA the system MUST offer to route the learner directly to
   the specific ÖVA(parts) drills named in the reflection.
 
-**Console & interaction**
+**Interface & interaction** (amended 2026-06-16 — constitution v2.0.0 moved from a
+console to a guided web GUI)
 
-- **FR-008**: All learner interaction MUST occur in a terminal-style console; the system
-  MUST NOT use forms or multiple-choice inputs.
-- **FR-009**: The console MUST accept SQL statements and execute them client-side in the
-  browser, returning results or a readable error.
-- **FR-010**: The console MUST support the meta-commands help, hint, progress,
-  repeat-demo, and abort, with hint and repeat-demo refused during PRÖVA.
+- **FR-008**: All learner interaction MUST occur in a guided web GUI (visible
+  phase/progress, instruction text, a SQL editor, a Run action, and a results table).
+  The learner MUST author real SQL; the system MUST NOT use multiple-choice inputs.
+- **FR-009**: The SQL editor MUST accept SQL statements and execute them client-side in
+  the browser when the learner runs them, returning results or a readable error.
+- **FR-010**: The GUI MUST provide explicit controls for hint, replay-demo, progress, and
+  abort, with hint and replay-demo disabled during PRÖVA. Language selection is a GUI
+  control.
 
 **Checking & grading**
 

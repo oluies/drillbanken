@@ -1,7 +1,8 @@
 # Architecture
 
 Drillbänken is a static, client-side Scala.js application. SQL runs in the browser via
-DuckDB-WASM; the UI is an xterm.js console rendered by Laminar. There is no backend.
+DuckDB-WASM; the UI is a guided web interface (CodeMirror SQL editor) rendered by
+Laminar. There is no backend. (Pre-v2.0.0 the UI was an xterm.js console.)
 
 ## Modules
 
@@ -13,15 +14,12 @@ flowchart TD
   domain["domain — pure pedagogy core (loop, checker, grading, progression)"]
   content["content — lesson DSL, trading-book seed"]
   engine["engine — DuckDB-WASM facade + EngineService"]
-  consoleMod["console — xterm facade + ConsoleService"]
-  app["app — Laminar UI, controller, persistence, i18n"]
+  app["app — Laminar GUI, LessonView, CodeMirror editor, persistence, i18n"]
 
   content --> domain
   engine --> domain
-  consoleMod --> domain
   app --> domain
   app --> engine
-  app --> consoleMod
   app --> content
 ```
 
@@ -44,11 +42,12 @@ stateDiagram-v2
 
 ## Interop boundary
 
-JS interop is confined to `engine` and `console` behind narrow Scala services
-(`EngineService`, `ConsoleService`). Facades are hand-written `js.native` (minimal
-surface) — ScalablyTyped was evaluated but OOM'd the compiler on the DuckDB-WASM + Apache
-Arrow facade tree (see `specs/002-console-sql-tutor/research.md` D2). DuckDB `.wasm` and
-worker assets are bundled by Vite via `?url` imports — no runtime CDN.
+JS interop is confined behind narrow boundaries: `engine` wraps DuckDB-WASM
+(`EngineService`), and `app` wraps the CodeMirror SQL editor (`SqlEditor`). Facades are
+hand-written `js.native` (minimal surface) — ScalablyTyped was evaluated but OOM'd the
+compiler on the DuckDB-WASM + Apache Arrow facade tree (see
+`specs/002-console-sql-tutor/research.md` D2). DuckDB `.wasm` and worker assets are
+bundled by Vite via `?url` imports — no runtime CDN.
 
 ## Persistence
 

@@ -8,16 +8,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "e2e": "node scripts/spike-e2e.mjs",
-    "e2e:lesson": "node scripts/lesson-e2e.mjs",
-    "e2e:us2-us4": "node scripts/us2-us4-e2e.mjs",
-    "e2e:persistence": "node scripts/persistence-e2e.mjs",
-    "e2e:lang": "node scripts/lang-e2e.mjs",
-    "e2e:editing": "node scripts/editing-e2e.mjs",
-    "e2e:schema": "node scripts/schema-e2e.mjs"
+    "e2e:gui": "node scripts/gui-e2e.mjs"
   },
   "dependencies": {
+    "@codemirror/lang-sql": "^6.8.0",
     "@duckdb/duckdb-wasm": "^1.33.1-dev45.0",
-    "@xterm/xterm": "^5.5.0"
+    "codemirror": "^6.0.1"
   },
   "devDependencies": {
     "@scala-js/vite-plugin-scalajs": "^1.0.0",
