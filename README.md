@@ -1,25 +1,26 @@
 # Drillbänken
 
-A gamified, console-based SQL tutor built on the Swedish Armed Forces instruction
-loop from *Handbok Utbildningsmetodik* (Försvarsmakten):
+A gamified SQL tutor built on the Swedish Armed Forces instruction loop from
+*Handbok Utbildningsmetodik* (Försvarsmakten):
 **VISA → INSTRUERA → ÖVA (parts) → ÖVA (whole) → PRÖVA**, mapped onto Kolb's
 experiential learning cycle.
 
 Everything runs client-side: SQL is executed by [DuckDB-WASM](https://github.com/duckdb/duckdb-wasm)
-in the browser, the UI is a terminal (xterm.js), and the whole thing is a static
-site deployed to GitHub Pages. No backend.
+in the browser, the UI is a **guided web interface** (instruction → SQL editor → run →
+feedback), and the whole thing is a static site deployed to GitHub Pages. No backend.
 
 > **Status: in development.** All six v1 user stories are implemented and verified
 > (full lesson loop, fail→reroute, resume, replay, author-a-lesson, export/import) plus a
-> bilingual toggle. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the design and
-> [`docs/spec-prompt.md`](docs/spec-prompt.md) for the driving brief.
+> bilingual toggle. As of constitution **v2.0.0** the interface is a guided web GUI
+> (CodeMirror SQL editor) rather than a terminal — see
+> [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Stack
 
 - **Scala 3 + Scala.js** for all frontend code; **Laminar** (Airstream signals) for UI.
 - A pure, framework-free **domain module** (lesson state machine, grading, progression)
   with **munit + ScalaCheck** property tests.
-- **DuckDB-WASM** as the SQL engine; **xterm.js** as the console; both behind a
+- **DuckDB-WASM** as the SQL engine; **CodeMirror** as the SQL editor; both behind a
   narrow, hand-written `js.native` interop facade.
 - **Vite** (via `@scala-js/vite-plugin-scalajs`) producing a static `dist/`,
   deployed to **GitHub Pages** via GitHub Actions.
@@ -27,19 +28,21 @@ site deployed to GitHub Pages. No backend.
 ## Develop
 
 ```bash
-npm install          # deps (Vite 7, DuckDB-WASM, xterm)
+npm install          # deps (Vite 7, DuckDB-WASM, CodeMirror)
 npm run dev          # dev server (vite-plugin-scalajs drives the sbt link)
 sbt domain/test content/test app/test   # unit tests (Scala.js on node)
 npm run build        # static dist/
 ```
 
 End-to-end checks run headless against the built app (Chrome via puppeteer-core):
-`npm run e2e` (engine spike), `e2e:lesson`, `e2e:us2-us4`, `e2e:persistence`, `e2e:lang`.
+`npm run e2e` (engine boot) and `npm run e2e:gui` (full loop, reroute, resume, language).
 
-## Console commands
+## Using it
 
-Type SQL to answer drills. Meta-commands: `help`, `hint`, `progress`, `repeat-demo`,
-`abort`, `lang` (toggle sv/en).
+A guided panel walks you through each phase: read the instruction, write SQL in the
+editor, and press **Run**. Buttons cover **Hint**, **Replay demo**, **To PRÖVA**, and
+**Drill again**; a **sv / en** toggle switches language. The seed schema (tables,
+columns, relationships) is shown as cards below the lesson.
 
 ## Deploy
 

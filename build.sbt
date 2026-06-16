@@ -41,21 +41,12 @@ lazy val engine = project
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0"
   )
 
-// xterm.js console adapter (facade + Laminar component) behind ConsoleService (T013).
-lazy val console = project
-  .in(file("modules/console"))
-  .enablePlugins(ScalaJSPlugin)
-  .dependsOn(domain)
-  .settings(
-    name := "drillbanken-console",
-    libraryDependencies += "com.raquo" %%% "laminar" % laminarV
-  )
-
 // The single Scala.js application Vite bundles. ESModule output for vite-plugin-scalajs.
+// Owns the Laminar GUI + the CodeMirror SQL-editor facade (constitution v2.0.0).
 lazy val app = project
   .in(file("modules/app"))
   .enablePlugins(ScalaJSPlugin)
-  .dependsOn(domain, engine, console, content)
+  .dependsOn(domain, engine, content)
   .settings(
     name := "drillbanken-app",
     scalaJSUseMainModuleInitializer := true,
@@ -69,5 +60,5 @@ lazy val app = project
 
 lazy val root = project
   .in(file("."))
-  .aggregate(domain, content, engine, console, app)
+  .aggregate(domain, content, engine, app)
   .settings(name := "drillbanken", publish / skip := true)

@@ -1,6 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
+Version change: 1.0.0 → 2.0.0 (2026-06-16)
+Bump rationale: MAJOR — Principle II redefined. New-user feedback showed the raw
+  terminal raised the floor too high, so the interaction medium changes from a
+  console to a guided web interface. The learner still authors real SQL (not
+  multiple-choice); only the chrome changes. Principles I, III, IV, V unchanged.
+Modified: II. The Console Is the Medium → II. A Guided Web Interface.
+Interop note: xterm.js removed; SQL editing now via a CodeMirror facade. Engine
+  (DuckDB-WASM) interop unchanged.
+Templates/docs requiring updates: spec.md FR-008/009/010 (✅ updated), README (✅).
+-----
 Version change: (template, unversioned) → 1.0.0
 Bump rationale: Initial ratification. Constitution populated from the five
   non-negotiable principles in docs/spec-prompt.md (MAJOR baseline → 1.0.0).
@@ -61,17 +71,19 @@ what was graded, why, and what to drill again.
 Encoding the loop as a typed state machine guarantees every lesson honors it and
 makes deviation a compile error rather than a review comment.
 
-### II. The Console Is the Medium
+### II. A Guided Web Interface
 
-All learner interaction MUST happen in a terminal-style interface (xterm.js or
-equivalent). No forms, no multiple choice. The drill engine is first-party code:
-no off-the-shelf gamified console-tutorial framework is adopted (Katacoda is dead;
-StackBlitz TutorialKit has no grading or drill loop; swirl informs the interaction
-model only).
+Learner interaction MUST happen in a structured, accessible web GUI: visible phase
+and progress, instruction text, a SQL editor, a Run action, results shown as a
+table, and explicit Hint/Replay/Next controls. The learner MUST still author real
+SQL (typed into the editor) — no multiple-choice — so the rigor of writing SQL is
+preserved; what changes versus a raw terminal is the surrounding guidance. The drill
+engine remains first-party code; no off-the-shelf tutorial framework is adopted.
 
-**Rationale:** The console is both the demonstration surface (VISA/INSTRUERA) and
-the practice surface (ÖVA/PRÖVA); a single medium keeps the målbild and the
-learner's own attempts in the same representation.
+**Rationale (amended 2026-06-16, v2.0.0):** A bare terminal raised the floor too
+high for new users. A guided GUI lowers the barrier to entry while keeping the
+learner writing genuine SQL against the real engine. The demonstration
+(VISA/INSTRUERA) is replayed in the GUI rather than a terminal.
 
 ### III. Typed Core, Scala Throughout
 
@@ -79,7 +91,7 @@ The frontend MUST be pure Scala 3 compiled with Scala.js and rendered with Lamin
 (Airstream signals for state). No Vue, no React. The lesson state machine, grading
 rules, and progression model MUST live in a pure, framework-free domain module with
 property-based tests (munit + ScalaCheck); the Laminar UI is a thin adapter over it.
-JavaScript interop (xterm.js, DuckDB-WASM) MUST be confined to a narrow, explicitly
+JavaScript interop (CodeMirror, DuckDB-WASM) MUST be confined to a narrow, explicitly
 typed facade layer — the domain module MUST contain no Laminar or DOM imports.
 
 **Rationale:** A framework-free typed core is independently testable, makes the
@@ -116,8 +128,8 @@ modifying the state machine.
   dependency. Arrow results are materialized to a flat `QueryResult { cols, rows }`.
 - **Build:** sbt + the Scala.js plugin, integrated into Vite via
   `@scala-js/vite-plugin-scalajs`; `npm run build` produces a static `dist/`.
-- **Interop:** xterm.js and DuckDB-WASM are reached only through the narrow typed
-  facade (Principle III).
+- **Interop:** CodeMirror (SQL editor) and DuckDB-WASM are reached only through the
+  narrow typed facade (Principle III).
 - **v1 subject domain:** SQL only. The architecture MUST allow other engines later
   (e.g. a shell or kubectl simulator) but only SQL ships in v1.
 - **Out of scope for v1:** accounts, server sync, multi-subject content, and
@@ -161,4 +173,4 @@ when merged.
 **Compliance review:** every Spec Kit `analyze` run MUST check artifacts against
 this constitution and report inconsistencies.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-14 | **Last Amended**: 2026-06-14
+**Version**: 2.0.0 | **Ratified**: 2026-06-14 | **Last Amended**: 2026-06-16
