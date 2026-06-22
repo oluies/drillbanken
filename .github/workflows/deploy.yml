@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # JVM toolchain for the Scala.js compile (net-new vs the Node-only reference repo).
       # v5 runs on Node 24 (v4 used the now-deprecated Node 20 action runtime).
