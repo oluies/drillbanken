@@ -30,7 +30,7 @@ jobs:
       - uses: sbt/setup-sbt@v1
 
       # Node toolchain for Vite.
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
