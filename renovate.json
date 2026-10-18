@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["before 6am on monday"],
+  "timezone": "Europe/Stockholm",
+  "packageRules": [
+    {
+      "description": "Was the npm ecosystem in .github/dependabot.yml: weekly, no grouping and no limit. Dev-tooling bumps are grouped here, which is why eight PRs were open at once before this.",
+      "matchManagers": ["npm"],
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "dev dependencies"
+    },
+    {
+      "description": "Was the github-actions ecosystem: weekly.",
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    },
+    {
+      "description": "typescript 5 -> 7 and vite 7 -> 8 were open as Dependabot #30 and #41 and are deliberately not folded into the migration PR: both are majors on the build toolchain and neither is verified. Renovate will re-raise them as separate PRs rather than inside the dev-dependencies group.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["typescript", "vite"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "build toolchain majors"
+    }
+  ]
+}
