@@ -1,26 +1,103 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "schedule": ["before 6am on monday"],
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": [
+    "before 6am on monday"
+  ],
   "timezone": "Europe/Stockholm",
   "packageRules": [
     {
       "description": "Was the npm ecosystem in .github/dependabot.yml: weekly, no grouping and no limit. Dev-tooling bumps are grouped here, which is why eight PRs were open at once before this.",
-      "matchManagers": ["npm"],
-      "matchDepTypes": ["devDependencies"],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
       "groupName": "dev dependencies"
     },
     {
       "description": "Was the github-actions ecosystem: weekly.",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "groupName": "github actions"
     },
     {
       "description": "typescript 5 -> 7 and vite 7 -> 8 were open as Dependabot #30 and #41 and are deliberately not folded into the migration PR: both are majors on the build toolchain and neither is verified. Renovate will re-raise them as separate PRs rather than inside the dev-dependencies group.",
-      "matchManagers": ["npm"],
-      "matchPackageNames": ["typescript", "vite"],
-      "matchUpdateTypes": ["major"],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "typescript",
+        "vite"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "groupName": "build toolchain majors"
+    },
+    {
+      "description": [
+        "Renovate's built-in sbt manager cannot resolve these two. %%% is sbt's",
+        "Scala.js cross-version operator, so the published artifact carries BOTH",
+        "the Scala.js platform suffix and the Scala binary suffix -- _sjs1_3 --",
+        "but the sbt manager only appends _3 and then 404s:",
+        "",
+        "  org/scala-js/scalajs-dom_3      -> 404",
+        "  org/scala-js/scalajs-dom_sjs1_3 -> 200",
+        "  com/raquo/laminar_3             -> 404",
+        "  com/raquo/laminar_sjs1_3        -> 200",
+        "",
+        "That is the 'Failed to look up sbt-package package ...' warning on the",
+        "dependency dashboard. These two are disabled so the sbt manager stops",
+        "retrying the name that cannot exist; the customManagers below track the",
+        "real artifacts instead.",
+        "",
+        "Only these two need it. munit, munit-scalacheck and upickle also use %%%",
+        "but publish a JVM artifact as well, so _3 resolves for them and they are",
+        "left on the built-in manager."
+      ],
+      "matchPackageNames": [
+        "org.scala-js:scalajs-dom_3",
+        "com.raquo:laminar_3"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Keep the Scala.js bumps in one PR rather than one per artifact.",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "groupName": "scala.js dependencies"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "scalajs-dom in build.sbt (%%% -> _sjs1_3; scalaVersion is 3.6.4)",
+      "managerFilePatterns": [
+        "/^build\\.sbt$/"
+      ],
+      "matchStrings": [
+        "\"org\\.scala-js\"\\s*%%%\\s*\"scalajs-dom\"\\s*%\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "org.scala-js:scalajs-dom_sjs1_3",
+      "datasourceTemplate": "maven"
+    },
+    {
+      "customType": "regex",
+      "description": "Laminar's version lives in the laminarV val, not at the use site, so the variable is what gets matched.",
+      "managerFilePatterns": [
+        "/^build\\.sbt$/"
+      ],
+      "matchStrings": [
+        "val\\s+laminarV\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "com.raquo:laminar_sjs1_3",
+      "datasourceTemplate": "maven"
     }
   ]
 }
