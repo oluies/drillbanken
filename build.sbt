@@ -53,7 +53,7 @@ lazy val app = project
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.ESModule)),
     libraryDependencies ++= Seq(
       "com.raquo" %%% "laminar" % laminarV,
-      "com.lihaoyi" %%% "upickle" % "4.0.2",
+      "com.lihaoyi" %%% "upickle" % "4.4.3",
       "org.scalameta" %%% "munit" % munitV % Test
     )
   )
