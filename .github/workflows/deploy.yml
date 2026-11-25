@@ -3,6 +3,13 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # The build below is the only thing that compiles Scala.js and links the app.
+  # Without this trigger it ran on main pushes ONLY, so a dependency bump could go
+  # green on its PR (secret-scan was the only PR check) and break the deploy after
+  # merging. That is exactly how upickle 4.4.3 landed: it pulls scalajs-library
+  # 1.20.1, which the then-pinned sbt-scalajs 1.17.0 linker could not read.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,8 +18,11 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  # Keyed by ref so PR builds neither queue behind each other nor behind a deploy.
+  # Pushes to main still share one group, so deploys stay serialised.
+  group: pages-${{ github.ref }}
+  # Never cancel a half-finished deploy; PR builds are safe to supersede.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -41,13 +51,17 @@ jobs:
       # vite build invokes sbt (via @scala-js/vite-plugin-scalajs) → static dist/.
       - run: npm run build
 
+      # Pages wiring only matters for a real deploy; on a PR the build above IS the gate.
       - uses: actions/configure-pages@v6
+        if: github.event_name != 'pull_request'
       - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
         with:
           path: dist
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
